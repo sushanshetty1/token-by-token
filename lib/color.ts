@@ -20,9 +20,15 @@ export function sequential(p: number, color = "var(--accent)"): string {
   return `color-mix(in oklab, ${color} ${pct}%, var(--cell-zero))`;
 }
 
-/** Text color that stays readable on top of diverging()/sequential() fills. */
-export function inkOn(strength: number): string {
-  return Math.abs(strength) > 0.62 ? "var(--card)" : "var(--ink)";
+/**
+ * Text color that stays readable on top of diverging()/sequential() fills.
+ * Saffron is light in both themes, so strong positive cells take dark text;
+ * strong ultramarine (and sequential) cells take the theme's contrasting text.
+ */
+export function inkOn(strength: number, sequentialFill = false): string {
+  if (Math.abs(strength) <= 0.58) return "var(--ink)";
+  if (sequentialFill) return "var(--on-neg)";
+  return strength > 0 ? "var(--on-pos)" : "var(--on-neg)";
 }
 
 const TOKEN_HUES = [

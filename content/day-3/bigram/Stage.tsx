@@ -155,7 +155,7 @@ function Heatmap({
                   fontSize={logits ? 11.5 : 13}
                   className="mono"
                   fontWeight={650}
-                  fill={inkOn(logits ? Math.log(v) / 1.7 : v / CMAX)}
+                  fill={inkOn(logits ? Math.log(v) / 1.7 : v / CMAX, !logits)}
                 >
                   {logits ? Math.log(v).toFixed(1) : v}
                 </text>
@@ -234,7 +234,7 @@ function ValueRow({
               fontSize={kind === "prob" ? 11.5 : 12}
               className="mono"
               fontWeight={600}
-              fill={ninf ? "var(--ink-3)" : inkOn(strength)}
+              fill={ninf ? "var(--ink-3)" : inkOn(strength, kind === "prob")}
             >
               {ninf ? "-∞" : kind === "prob" ? (v === 0 ? "0" : v.toFixed(2).replace(/^0/, "")) : v.toFixed(2)}
             </text>

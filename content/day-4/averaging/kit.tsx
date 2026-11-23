@@ -199,7 +199,7 @@ export function Mat({
                 fontSize={isMasked ? fs * 1.05 : fs}
                 className="mono"
                 fontWeight={isMasked ? 600 : 500}
-                fill={isMasked ? "var(--ink-2)" : inkOn(strength)}
+                fill={isMasked ? "var(--ink-2)" : inkOn(strength, mode !== "diverging")}
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 transition={{ duration: 0.25, delay: delay + (r * cols + c) * stagger }}

@@ -279,7 +279,7 @@ export function Cells({
                 textAnchor="middle"
                 fontSize={cell * 0.36}
                 className="mono"
-                fill={inkOn(strength)}
+                fill={inkOn(strength, mode === "sequential")}
               >
                 {Math.abs(v) >= 10 ? v.toFixed(0) : v.toFixed(1)}
               </text>
@@ -382,7 +382,7 @@ export function Matrix({
                   textAnchor="middle"
                   fontSize={Math.max(8, cell * 0.33)}
                   className="mono"
-                  fill={inkOn(mode === "diverging" ? strength : strength * 1.1)}
+                  fill={inkOn(strength, mode === "sequential")}
                 >
                   {Number.isFinite(v) ? v.toFixed(digits) : v > 0 ? "∞" : "-∞"}
                 </text>

@@ -1,11 +1,12 @@
 "use client";
 
-import { Check, ChevronRight, Menu, X } from "lucide-react";
+import { Check, ChevronRight, Menu, PanelLeftClose, PanelLeftOpen, X } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { DAYS, TOTAL_MINUTES, lessonKey } from "@/content/curriculum";
 import { lessonFraction, useProgress } from "@/lib/progress";
+import { usePref } from "@/lib/prefs";
 
 function Ring({ frac }: { frac: number }) {
   if (frac >= 1)
@@ -42,10 +43,7 @@ function NavTree({ onNavigate }: { onNavigate?: () => void }) {
   const m = pathname.match(/^\/day\/(\d+)(?:\/([^/]+))?/);
   const activeDay = m ? Number(m[1]) : 1;
   const activeSlug = m?.[2];
-  const [open, setOpen] = useState<Set<number>>(() => new Set([activeDay]));
-  useEffect(() => {
-    setOpen((o) => new Set(o).add(activeDay));
-  }, [activeDay]);
+  const [toggled, setToggled] = useState<Record<number, boolean>>({});
 
   return (
     <div className="flex h-full flex-col">
@@ -57,7 +55,7 @@ function NavTree({ onNavigate }: { onNavigate?: () => void }) {
         {DAYS.map((d) => {
           const keys = d.lessons.map((l) => lessonKey(d.n, l.slug));
           const doneCount = keys.filter((k) => progress.lessons[k]?.done).length;
-          const isOpen = open.has(d.n);
+          const isOpen = toggled[d.n] ?? d.n === activeDay;
           const isActive = activeDay === d.n;
           return (
             <li key={d.n}>
@@ -70,14 +68,7 @@ function NavTree({ onNavigate }: { onNavigate?: () => void }) {
                   type="button"
                   aria-expanded={isOpen}
                   aria-label={isOpen ? `Collapse day ${d.n}` : `Expand day ${d.n}`}
-                  onClick={() =>
-                    setOpen((o) => {
-                      const n = new Set(o);
-                      if (n.has(d.n)) n.delete(d.n);
-                      else n.add(d.n);
-                      return n;
-                    })
-                  }
+                  onClick={() => setToggled((t) => ({ ...t, [d.n]: !isOpen }))}
                   className="grid h-8 w-7 shrink-0 place-items-center"
                 >
                   <ChevronRight size={15} className={`transition-transform ${isOpen ? "rotate-90" : ""}`} />
@@ -141,14 +132,77 @@ function NavTree({ onNavigate }: { onNavigate?: () => void }) {
   );
 }
 
+function SlimRail({ onExpand }: { onExpand: () => void }) {
+  const pathname = usePathname() ?? "";
+  const progress = useProgress();
+  const m = pathname.match(/^\/day\/(\d+)/);
+  const activeDay = m ? Number(m[1]) : 0;
+  return (
+    <div className="flex flex-col items-center gap-1.5">
+      <button
+        type="button"
+        onClick={onExpand}
+        className="mb-2 grid h-9 w-9 place-items-center rounded-[10px] border border-rule-strong bg-card text-ink-2 hover:text-ink"
+        aria-label="Show the course outline"
+      >
+        <PanelLeftOpen size={17} />
+      </button>
+      {DAYS.map((d) => {
+        const keys = d.lessons.map((l) => lessonKey(d.n, l.slug));
+        const frac = keys.reduce((s, k) => s + lessonFraction(progress, k), 0) / keys.length;
+        const on = d.n === activeDay;
+        return (
+          <Link
+            key={d.n}
+            href={`/day/${d.n}/`}
+            aria-label={`Day ${d.n}: ${d.title}`}
+            className={`group relative grid h-10 w-10 place-items-center rounded-[10px] font-mono text-[14px] font-bold ${
+              on ? "bg-ink text-card" : "text-ink hover:bg-paper-2"
+            }`}
+          >
+            {d.n}
+            <span className="absolute bottom-1 left-2 right-2 h-[3px] overflow-hidden rounded-full bg-rule">
+              <span className="block h-full bg-ok" style={{ width: `${frac * 100}%` }} />
+            </span>
+            <span className="pointer-events-none absolute left-12 top-1/2 z-50 hidden -translate-y-1/2 whitespace-nowrap rounded-lg border border-rule bg-card px-2.5 py-1 font-sans text-[13px] font-semibold text-ink shadow-[var(--shadow-2)] group-hover:block group-focus-visible:block">
+              Day {d.n}: {d.title}
+            </span>
+          </Link>
+        );
+      })}
+    </div>
+  );
+}
+
 export function CourseNav() {
   const [drawer, setDrawer] = useState(false);
-  const pathname = usePathname();
-  useEffect(() => setDrawer(false), [pathname]);
+  const pathname = usePathname() ?? "";
+  const isLesson = /^\/day\/\d+\/[^/]+/.test(pathname);
+  const [lessonNav, setLessonNav] = usePref("tbt:lesson-nav", "slim");
+  const slim = isLesson && lessonNav === "slim";
   return (
     <>
-      <aside className="scrollbar-thin hidden w-[272px] shrink-0 overflow-y-auto border-r border-rule px-3 py-5 lg:sticky lg:top-[60px] lg:block lg:h-[calc(100vh-60px)]">
-        <NavTree />
+      <aside
+        className={`scrollbar-thin hidden shrink-0 overflow-y-auto border-r border-rule py-5 lg:sticky lg:top-[60px] lg:block lg:h-[calc(100vh-60px)] ${
+          slim ? "w-[68px] px-0" : "w-[272px] px-3"
+        }`}
+      >
+        {slim ? (
+          <SlimRail onExpand={() => setLessonNav("full")} />
+        ) : (
+          <>
+            {isLesson && (
+              <button
+                type="button"
+                onClick={() => setLessonNav("slim")}
+                className="mb-3 ml-auto flex items-center gap-1.5 rounded-lg px-2 py-1 text-[12.5px] font-medium text-ink-3 hover:bg-paper-2 hover:text-ink"
+              >
+                <PanelLeftClose size={15} /> Hide outline
+              </button>
+            )}
+            <NavTree />
+          </>
+        )}
       </aside>
       <button
         type="button"

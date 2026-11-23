@@ -158,6 +158,7 @@ body {
   border-radius: 6px;
 }
 
+@layer components {
 .font-display {
   font-family: var(--font-sans);
   font-variation-settings: "wdth" 88;
@@ -288,6 +289,9 @@ body {
 /* SVG stage text defaults. */
 .stage-svg text {
   font-family: var(--font-sans);
+}
+/* Presentation attributes lose to CSS, so only fill text that has no fill of its own. */
+.stage-svg text:not([fill]) {
   fill: var(--ink);
 }
 .stage-svg .mono {
@@ -297,6 +301,8 @@ body {
 .scrollbar-thin {
   scrollbar-width: thin;
   scrollbar-color: var(--rule-strong) transparent;
+}
+
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -316,6 +322,7 @@ body {
   }
 }
 
+@layer components {
 /* Range slider in the system's colors. */
 .tbt-range {
   -webkit-appearance: none;
@@ -348,4 +355,15 @@ body {
 .tbt-range:focus-visible {
   outline: 2px solid var(--accent);
   outline-offset: 4px;
+}
+}
+
+/* JetBrains Mono turns <| and |> into arrows; tokens must show their real characters. */
+.font-mono,
+.mono,
+code,
+pre,
+textarea {
+  font-variant-ligatures: none;
+  font-feature-settings: "calt" 0, "liga" 0;
 }

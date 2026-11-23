@@ -105,7 +105,7 @@ export function LessonPlayer({ lesson, dayTitle, lessonsInDay, next }: Props) {
   const Stage = mod?.Stage;
 
   return (
-    <div className="grid min-w-0 gap-4 xl:grid-cols-[minmax(0,1fr)_400px]">
+    <div className="grid min-w-0 gap-4 xl:grid-cols-[minmax(0,1fr)_380px] 2xl:grid-cols-[minmax(0,1fr)_420px]">
       {/* Centre column */}
       <div className="min-w-0 space-y-4">
         <header className="panel px-5 py-4">
@@ -218,7 +218,7 @@ export function LessonPlayer({ lesson, dayTitle, lessonsInDay, next }: Props) {
                 >
                   <h2 className="font-display mt-3 text-[1.35rem] font-bold leading-tight text-ink">{s.title}</h2>
                   <div className="prose-lesson mt-2.5">{s.body}</div>
-                  {s.predict && <PredictCard predict={s.predict} stepKey={`${key}:${step}`} />}
+                  {s.predict && <PredictCard key={`${key}:${step}`} predict={s.predict} />}
                   {s.keyIdea && <KeyIdea>{s.keyIdea}</KeyIdea>}
                   {s.changed && <Changed items={s.changed} />}
                 </motion.div>

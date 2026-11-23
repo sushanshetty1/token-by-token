@@ -95,11 +95,13 @@ export function Stepper({
 }) {
   const scroller = useRef<HTMLDivElement>(null);
   useEffect(() => {
-    const el = scroller.current?.querySelector<HTMLElement>(`[data-step="${current}"]`);
-    el?.scrollIntoView({ block: "nearest", inline: "center", behavior: "smooth" });
+    const box = scroller.current;
+    const el = box?.querySelector<HTMLElement>(`[data-step="${current}"]`);
+    if (!box || !el) return;
+    box.scrollTo({ left: el.offsetLeft - box.clientWidth / 2 + el.clientWidth / 2, behavior: "smooth" });
   }, [current]);
   return (
-    <div ref={scroller} className="scrollbar-thin overflow-x-auto">
+    <div ref={scroller} className="scrollbar-thin relative overflow-x-auto">
       <ol className="relative flex min-w-max items-start px-1 pb-1">
         {steps.map((s, i) => {
           const done = i < current || i <= seen;
@@ -143,9 +145,9 @@ export function Stepper({
   );
 }
 
-export function PredictCard({ predict, stepKey }: { predict: Predict; stepKey: string }) {
+/** Keyed by the player per step, so the pick resets when the step changes. */
+export function PredictCard({ predict }: { predict: Predict }) {
   const [pick, setPick] = useState<number | null>(null);
-  useEffect(() => setPick(null), [stepKey]);
   const answered = pick !== null;
   const right = pick === predict.answer;
   return (

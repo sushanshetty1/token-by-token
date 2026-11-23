@@ -31,18 +31,17 @@ You need [Bun](https://bun.sh) and Node. Screenshots and the PDF also need Googl
 
 ```bash
 bun install
-bun run dev            # http://localhost:3000
-bunx next dev -p 3140  # the port the scripts below expect by default
+bun run dev -- --port 3140   # http://localhost:3140, the port the scripts below expect
 ```
 
 Build a static site:
 
 ```bash
 bun run build          # static export to out/
-python3 -m http.server -d out 8080
+bun run serve          # http://localhost:3150
 ```
 
-`next.config.ts` sets `output: "export"` and `trailingSlash: true`, so every page is a plain HTML file in `out/` and the app can be hosted anywhere that serves static files.
+`next.config.ts` sets `output: "export"` and `trailingSlash: true`, so every page is a plain HTML file in `out/` and the app can be hosted anywhere that serves static files. The build script sets `NEXT_LOADER_THREADS=1`, which makes Turbopack run its CSS loaders in worker threads instead of a socket-based child-process pool (that pool failed to start in this machine's sandboxed shells). `NEXT_DIST_DIR` picks the output folder, so a build never touches the dev server's `.next`.
 
 ## How the 7 days work
 
@@ -86,8 +85,8 @@ Read [AUTHORING.md](AUTHORING.md) before writing or changing a lesson. It has th
 The Download PDF button on `/plan/` serves `public/LLM_From_Scratch_7_Days.pdf`. It is generated from the page itself, so regenerate it whenever a `day.ts` changes:
 
 ```bash
-bunx next dev -p 3140           # in one terminal
-node scripts/make-pdf.mjs       # in another; prints the page count
+bun run dev -- --port 3140      # in one terminal
+bun run pdf                     # in another; prints the page count
 ```
 
 The script opens `http://localhost:3140/plan/` in your local Chrome through Playwright, in the light theme with print styles, and writes an A4 PDF with page numbers. Pass a different address as the first argument (for example `node scripts/make-pdf.mjs http://localhost:3000/plan/`) or `--out=path.pdf` to write somewhere else. It refuses to write anything if the page fails to render.
@@ -101,10 +100,10 @@ To check the result, rasterize the pages and look at them, for example `pdftoppm
 | `node scripts/shot.mjs <url> <out.png>` | Screenshot a page (`--dark`, `--w=390 --h=844` for a phone, `--full`, `--wait=3000`). Prints page errors. |
 | `node scripts/shot-lesson.mjs <day> <slug> <outDir>` | Screenshot every step of one lesson. |
 | `node scripts/montage.mjs <out.png> <cols> <width> <img...>` | Combine screenshots into one grid image. |
-| `node scripts/make-pdf.mjs` | Regenerate the plan PDF. |
+| `bun run pdf` | Regenerate the plan PDF. |
 | `npx tsc --noEmit -p .` | Type-check. |
 | `bun run lint` | ESLint. |
-| `npx vitest run lib/engine` | Tests for the in-browser training engine. |
+| `bun run test` | Tests for the in-browser training engine (gradient checks, initial loss, determinism). |
 
 ## Credits
 

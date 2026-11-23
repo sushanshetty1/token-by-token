@@ -4,9 +4,12 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
-    "build": "next build",
+    "build": "NEXT_LOADER_THREADS=1 NEXT_DIST_DIR=out next build",
     "start": "next start",
-    "lint": "eslint"
+    "lint": "eslint",
+    "serve": "python3 -m http.server 3150 --directory out",
+    "pdf": "node scripts/make-pdf.mjs",
+    "test": "vitest run lib/engine"
   },
   "dependencies": {
     "@fontsource-variable/bricolage-grotesque": "^5.3.0",

@@ -6,6 +6,11 @@ const nextConfig: NextConfig = {
   distDir: process.env.NEXT_DIST_DIR || ".next",
   trailingSlash: true,
   images: { unoptimized: true },
+  // Sandboxed shells cannot open the sockets Turbopack's child-process loader pool uses;
+  // NEXT_LOADER_THREADS=1 runs CSS loaders in worker threads instead.
+  experimental: process.env.NEXT_LOADER_THREADS
+    ? { turbopackPluginRuntimeStrategy: "forceWorkerThreads" }
+    : {},
   turbopack: {
     rules: {
       "*.css": {

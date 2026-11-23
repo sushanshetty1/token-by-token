@@ -1,5 +1,7 @@
 # Build the static export, then serve it with nginx. No Node at runtime.
-FROM oven/bun:1.3.11 AS build
+# Next must run on Node: under the bun runtime its server chunks fail to load.
+FROM node:24-bookworm-slim AS build
+COPY --from=oven/bun:1.3.11 /usr/local/bin/bun /usr/local/bin/bun
 WORKDIR /app
 COPY package.json bun.lock ./
 RUN bun install --frozen-lockfile

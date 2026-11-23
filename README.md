@@ -7,6 +7,7 @@
 **Build an LLM from scratch in 7 days.**<br>
 Animated lessons that show what happens inside a language model, one token at a time.
 
+[![CI](https://github.com/sushanshetty1/token-by-token/actions/workflows/ci.yml/badge.svg)](https://github.com/sushanshetty1/token-by-token/actions/workflows/ci.yml)
 ![Next.js 16](https://img.shields.io/badge/Next.js-16-17212b?logo=nextdotjs)
 ![React 19](https://img.shields.io/badge/React-19-2f52d0?logo=react&logoColor=white)
 ![TypeScript strict](https://img.shields.io/badge/TypeScript-strict-2f52d0?logo=typescript&logoColor=white)
@@ -78,7 +79,7 @@ Every lesson can also be read as plain text, which is how search engines and scr
 You need [Bun](https://bun.sh) 1.3+ and Node 22+.
 
 ```bash
-git clone <this repo> token-by-token
+git clone https://github.com/sushanshetty1/token-by-token.git
 cd token-by-token
 bun install
 bun run dev -- --port 3140

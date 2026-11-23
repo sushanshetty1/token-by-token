@@ -169,6 +169,7 @@ export function LessonPlayer({ lesson, dayTitle, lessonsInDay, next }: Props) {
               )}
             </div>
           </div>
+          <div id="stage-controls-slot" className="grid gap-2 px-3 empty:hidden [&:not(:empty)]:border-t [&:not(:empty)]:border-rule [&:not(:empty)]:py-3 md:hidden" />
           <div className="flex flex-wrap items-center gap-x-4 gap-y-1 border-t border-rule px-4 py-2.5">
             {mod?.legend && <Legend items={mod.legend} />}
             <span className="ml-auto flex items-center gap-1 text-[12px] text-ink-3 md:hidden">

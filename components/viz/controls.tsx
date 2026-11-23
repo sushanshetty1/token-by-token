@@ -5,7 +5,22 @@
  * they float over the graph paper, or anywhere in a stage that renders HTML.
  */
 
-import type { ReactNode } from "react";
+import { createPortal } from "react-dom";
+import { useSyncExternalStore, type ReactNode } from "react";
+
+const PHONE = "(max-width: 767px)";
+
+function usePhone() {
+  return useSyncExternalStore(
+    (cb) => {
+      const mq = window.matchMedia(PHONE);
+      mq.addEventListener("change", cb);
+      return () => mq.removeEventListener("change", cb);
+    },
+    () => window.matchMedia(PHONE).matches,
+    () => false,
+  );
+}
 
 export function StageOverlay({
   children,
@@ -24,6 +39,15 @@ export function StageOverlay({
     top: "left-1/2 top-3 -translate-x-1/2",
     bottom: "left-1/2 bottom-3 -translate-x-1/2",
   };
+  const phone = usePhone();
+  // On phones the stage pans sideways, so controls move below it where a thumb can reach them.
+  const slot = phone && typeof document !== "undefined" ? document.getElementById("stage-controls-slot") : null;
+  if (slot) {
+    return createPortal(
+      <div className={`rounded-xl border border-rule bg-card p-3 ${className.replace(/\bw-\[[^\]]+\]/g, "")}`}>{children}</div>,
+      slot,
+    );
+  }
   return (
     <div
       className={`absolute z-10 rounded-xl border border-rule bg-card/95 p-3 shadow-[var(--shadow-2)] backdrop-blur ${pos[position]} ${className}`}

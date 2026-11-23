@@ -56,7 +56,9 @@ function RailCell({ label, value }: { label: string; value?: string }) {
       }`}
     >
       <div className="text-[11.5px] font-medium text-ink-3">{label}</div>
-      <div className="tabular mt-0.5 truncate font-mono text-[14.5px] font-semibold text-ink">{value ?? "–"}</div>
+      <div className="tabular mt-0.5 truncate font-mono text-[14.5px] font-semibold text-ink">
+        {value ?? <span className="text-ink-3">…</span>}
+      </div>
     </div>
   );
 }

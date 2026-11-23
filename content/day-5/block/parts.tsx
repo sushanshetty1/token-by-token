@@ -264,7 +264,7 @@ export function TryLayout({ svg, controls }: { svg: ReactNode; controls: ReactNo
   return (
     <div className="absolute inset-0 flex">
       <div className="relative min-h-0 min-w-0 flex-1">{svg}</div>
-      <div className="scrollbar-thin w-[290px] shrink-0 overflow-y-auto border-l border-rule bg-card/95 p-4">{controls}</div>
+      <div className="w-[290px] shrink-0 overflow-y-auto border-l border-rule bg-card/95 p-4">{controls}</div>
     </div>
   );
 }

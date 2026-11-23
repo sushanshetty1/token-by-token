@@ -19,7 +19,7 @@ export function DaySection({ day }: { day: DayContent }) {
           </span>
           <div className="min-w-0">
             <p className="font-mono text-[12.5px] font-semibold text-ink-3">Day {day.n} of 7</p>
-            <h2 className="font-display text-[clamp(1.7rem,3.6vw,2.3rem)] font-bold leading-[1.05] text-ink">{day.title}</h2>
+            <h2 className="font-display text-[clamp(1.7rem,3.6vw,2.3rem)] font-bold leading-[1.05] text-ink text-balance">{day.title}</h2>
             <p className="mt-1.5 max-w-[52ch] text-[15.5px] leading-snug text-ink-2">{day.tagline}</p>
           </div>
         </div>

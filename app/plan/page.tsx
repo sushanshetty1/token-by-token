@@ -20,6 +20,7 @@ import {
   type FinalCheck,
 } from "./content";
 import { DaySection } from "./DaySection";
+import { PlanDoc } from "./PlanDoc";
 import { FinishLine } from "./FinishLine";
 import { DayRefs, Sheet, SheetHead, displayUrl, fmtHours } from "./parts";
 import { PlanToolbar } from "./PlanToolbar";
@@ -41,6 +42,18 @@ const PRINT_CSS = `
   .plan-doc svg { break-inside: avoid; }
   nextjs-portal { display: none !important; }
 }
+.plan-doc { counter-reset: sheet; }
+.plan-doc .plan-sheet { counter-increment: sheet; }
+@media screen {
+  .plan-doc .plan-sheet::after {
+    content: counter(sheet);
+    position: absolute;
+    right: 20px;
+    bottom: 14px;
+    font: 600 11.5px/1 var(--font-mono);
+    color: var(--ink-3);
+  }
+}
 `;
 
 const allFinal: FinalCheck[] = [...FINAL_ORIGINAL, ...FINAL_NEW];
@@ -54,7 +67,7 @@ export default function PlanPage() {
     <>
       <style dangerouslySetInnerHTML={{ __html: PRINT_CSS }} />
       <PlanToolbar />
-      <main className="plan-doc mx-auto max-w-[880px] space-y-6 px-3 pb-24 pt-6 sm:px-6 sm:pt-8 print:max-w-none print:space-y-0 print:px-0 print:pb-0 print:pt-0">
+      <PlanDoc>
         <Cover hours={hours} videos={videos} questions={dayQuestions + allFinal.length + NAPKIN.length} />
         <HowToLearn hours={hours} />
         <Week />
@@ -65,7 +78,7 @@ export default function PlanPage() {
         <Project />
         <SafeToSkip />
         <Resources />
-      </main>
+      </PlanDoc>
     </>
   );
 }

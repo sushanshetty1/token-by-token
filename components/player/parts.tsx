@@ -104,7 +104,7 @@ export function Stepper({
   }, [current]);
   return (
     <div ref={scroller} className="relative min-w-0 overflow-x-auto">
-      <ol className="relative flex min-w-max items-start px-1 pb-1">
+      <ol className="relative flex min-w-max items-start px-1 pb-1.5 pt-2">
         {steps.map((s, i) => {
           const done = i < current || i <= seen;
           const on = i === current;

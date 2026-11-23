@@ -68,7 +68,7 @@ export function Drill({ goTo }: { goTo?: (step: number) => void }) {
             </span>
           </div>
           <h4 className="font-display mt-2 text-[18px] font-bold leading-snug text-ink">{q.q}</h4>
-          <div className="scrollbar-thin mt-2 min-h-0 flex-1 overflow-y-auto pr-1">
+          <div className="mt-2 min-h-0 flex-1 overflow-y-auto pr-1">
             {open ? (
               <motion.p
                 initial={{ opacity: 0 }}

@@ -30,7 +30,7 @@ export function Sheet({
   return (
     <section
       id={id}
-      className={`plan-sheet panel scroll-mt-[112px] p-5 shadow-[var(--shadow-1)] sm:p-9 md:scroll-mt-[128px] print:rounded-none print:border-0 print:bg-transparent print:p-0 print:shadow-none ${
+      className={`plan-sheet panel relative scroll-mt-[112px] p-5 shadow-[var(--shadow-1)] sm:p-9 md:scroll-mt-[128px] print:rounded-none print:border-0 print:bg-transparent print:p-0 print:shadow-none ${
         breakBefore ? "print:break-before-page" : ""
       } ${className}`}
     >

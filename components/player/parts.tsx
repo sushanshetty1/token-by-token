@@ -29,7 +29,7 @@ export function KindTag({ kind }: { kind: StepKind }) {
 /** The strip of live readings above the stage. */
 export function Rail({ slots, values }: { slots: RailSlot[]; values: Record<string, string> }) {
   return (
-    <div className="scrollbar-thin flex gap-2 overflow-x-auto">
+    <div className="flex gap-2 overflow-x-auto">
       {slots.map((s) => (
         <RailCell key={s.id} label={s.label} value={values[s.id]} />
       ))}
@@ -103,7 +103,7 @@ export function Stepper({
     box.scrollTo({ left: el.offsetLeft - box.clientWidth / 2 + el.clientWidth / 2, behavior: "smooth" });
   }, [current]);
   return (
-    <div ref={scroller} className="scrollbar-thin relative min-w-0 overflow-x-auto">
+    <div ref={scroller} className="relative min-w-0 overflow-x-auto">
       <ol className="relative flex min-w-max items-start px-1 pb-1">
         {steps.map((s, i) => {
           const done = i < current || i <= seen;

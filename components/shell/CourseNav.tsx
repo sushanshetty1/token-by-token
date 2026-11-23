@@ -183,7 +183,7 @@ export function CourseNav() {
   return (
     <>
       <aside
-        className={`scrollbar-thin hidden shrink-0 overflow-y-auto border-r border-rule py-5 lg:sticky lg:top-[60px] lg:block lg:h-[calc(100vh-60px)] ${
+        className={`hidden shrink-0 overflow-y-auto border-r border-rule py-5 lg:sticky lg:top-[60px] lg:block lg:h-[calc(100vh-60px)] ${
           slim ? "w-[68px] px-0" : "w-[272px] px-3"
         }`}
       >
@@ -215,7 +215,7 @@ export function CourseNav() {
       {drawer && (
         <div className="fixed inset-0 z-50 lg:hidden" role="dialog" aria-modal="true" aria-label="Course outline">
           <button type="button" className="absolute inset-0 bg-ink/40" aria-label="Close" onClick={() => setDrawer(false)} />
-          <div className="scrollbar-thin absolute inset-y-0 left-0 w-[300px] overflow-y-auto bg-paper px-3 py-4 shadow-[var(--shadow-2)]">
+          <div className="absolute inset-y-0 left-0 w-[300px] overflow-y-auto bg-paper px-3 py-4 shadow-[var(--shadow-2)]">
             <button type="button" onClick={() => setDrawer(false)} className="mb-2 ml-auto grid h-8 w-8 place-items-center rounded-lg hover:bg-paper-2" aria-label="Close the course outline">
               <X size={17} />
             </button>

@@ -160,7 +160,7 @@ export function LessonPlayer({ lesson, dayTitle, lessonsInDay, next }: Props) {
             </div>
           </div>
           {/* On phones the stage keeps a readable size and pans sideways. */}
-          <div className="scrollbar-thin overflow-x-auto">
+          <div className="overflow-x-auto">
             <div className="graph-paper relative aspect-[16/9] w-full min-w-[720px] md:min-w-0">
               {Stage ? (
                 <Stage key={`${step}-${runId}`} step={step} playing={playing} runId={runId} goTo={go} />
@@ -208,7 +208,7 @@ export function LessonPlayer({ lesson, dayTitle, lessonsInDay, next }: Props) {
       </div>
 
       {/* Right column on wide screens */}
-      <aside className="scrollbar-thin hidden min-w-0 space-y-4 xl:sticky xl:top-[76px] xl:block xl:max-h-[calc(100vh-92px)] xl:self-start xl:overflow-y-auto xl:pb-2">
+      <aside className="hidden min-w-0 space-y-4 xl:sticky xl:top-[76px] xl:block xl:max-h-[calc(100vh-92px)] xl:self-start xl:overflow-y-auto xl:pb-2">
         {narrative}
         {mod && <LearnList items={mod.learn} ticked={ticked} />}
       </aside>

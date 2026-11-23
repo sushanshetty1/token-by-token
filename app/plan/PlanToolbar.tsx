@@ -42,7 +42,7 @@ export function PlanToolbar() {
   return (
     <div className="z-30 border-b border-rule bg-paper/90 backdrop-blur md:sticky md:top-[61px] print:hidden">
       <div className="mx-auto flex max-w-[1060px] flex-wrap items-center gap-x-4 gap-y-2 px-4 py-2.5 sm:px-6">
-        <nav aria-label="Sections of the plan" className="scrollbar-thin order-2 -mx-1 flex w-full min-w-0 gap-0.5 overflow-x-auto px-1 sm:order-none sm:w-auto sm:flex-1">
+        <nav aria-label="Sections of the plan" className="order-2 -mx-1 flex w-full min-w-0 gap-0.5 overflow-x-auto px-1 sm:order-none sm:w-auto sm:flex-1">
           {JUMPS.map((j) => (
             <a
               key={j.href}

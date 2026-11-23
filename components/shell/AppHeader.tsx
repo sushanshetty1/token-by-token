@@ -55,7 +55,7 @@ export function AppHeader() {
           <ThemeToggle />
         </div>
       </div>
-      <nav className="scrollbar-thin flex gap-1 overflow-x-auto border-t border-rule px-3 py-1.5 md:hidden" aria-label="Main">
+      <nav className="flex gap-1 overflow-x-auto border-t border-rule px-3 py-1.5 md:hidden" aria-label="Main">
         {NAV.map((n) => {
           const on = n.match(pathname);
           return (

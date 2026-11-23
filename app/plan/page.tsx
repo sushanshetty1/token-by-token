@@ -138,7 +138,7 @@ function Cover({ hours, videos, questions }: { hours: number; videos: number; qu
             </li>
           </ul>
         </div>
-        <figure className="graph-paper scrollbar-thin overflow-x-auto rounded-2xl border border-rule p-3 sm:p-4 print:overflow-visible">
+        <figure className="graph-paper overflow-x-auto rounded-2xl border border-rule p-3 sm:p-4 print:overflow-visible">
           <div className="min-w-[430px] sm:min-w-0 print:min-w-0">
             <FinishLine />
           </div>

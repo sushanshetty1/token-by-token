@@ -72,7 +72,7 @@ export function TokenizerPlayground({
           ))}
         </div>
       )}
-      <div className="scrollbar-thin min-h-[64px] flex-1 overflow-y-auto">
+      <div className="min-h-[64px] flex-1 overflow-y-auto">
         <ul className="flex flex-wrap gap-x-1.5 gap-y-2.5" aria-label={`Tokens using ${ENCODING_LABEL[enc]}`}>
           {pieces.map((p, i) => {
             const tint = tokenTint(i);

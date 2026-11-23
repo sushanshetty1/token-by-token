@@ -1,6 +1,19 @@
+import type { Metadata } from "next";
 import Link from "next/link";
+import { JsonLd } from "@/components/seo/JsonLd";
+import { breadcrumbs } from "@/lib/schema";
+import { abs, ogImage, pageMeta } from "@/lib/site";
 
-export const metadata = { title: "Interview cheat sheet" };
+export const metadata: Metadata = pageMeta({
+  title: "LLM interview cheat sheet",
+  description:
+    "Tensor shapes through a GPT, formulas for attention, cross-entropy, parameter count, FLOPs and KV cache size, GPT-2 and GPT-3 numbers, and an LLM glossary.",
+  path: "/cheatsheet/",
+  image: ogImage("cheatsheet"),
+  imageAlt: "LLM interview cheat sheet: shapes, formulas and numbers",
+  type: "article",
+  keywords: ["LLM interview cheat sheet", "transformer formulas", "KV cache size formula", "GPT parameter count", "LLM glossary"],
+});
 
 const SHAPES = [
   { stage: "Token ids", shape: "(B, T)", note: "integers from the tokenizer" },
@@ -60,9 +73,31 @@ const GLOSSARY = [
   ["MoE", "A router sends each token to a few expert MLPs: many total, few active parameters."],
 ];
 
+const CHEATSHEET_LD = [
+  {
+    "@type": "DefinedTermSet",
+    "@id": abs("/cheatsheet/#glossary"),
+    name: "Glossary of large language model terms",
+    url: abs("/cheatsheet/"),
+    inLanguage: "en",
+    hasDefinedTerm: GLOSSARY.map(([name, description]) => ({ "@type": "DefinedTerm", name, description })),
+  },
+  {
+    "@type": "LearningResource",
+    name: "LLM interview cheat sheet",
+    url: abs("/cheatsheet/"),
+    learningResourceType: "Cheat sheet",
+    isAccessibleForFree: true,
+    isPartOf: { "@id": abs("/#course") },
+    teaches: FORMULAS.map((f) => f.name),
+  },
+  breadcrumbs([{ name: "Interview cheat sheet", path: "/cheatsheet/" }]),
+];
+
 export default function CheatsheetPage() {
   return (
     <main className="mx-auto max-w-[1180px] px-4 pb-24 pt-10 sm:px-6">
+      <JsonLd data={CHEATSHEET_LD} />
       <header className="max-w-[70ch]">
         <h1 className="font-display text-[clamp(2rem,4vw,2.8rem)] font-extrabold leading-[1.02] text-ink">Interview cheat sheet</h1>
         <p className="mt-3 text-[16.5px] text-ink-2">

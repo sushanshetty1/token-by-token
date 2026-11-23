@@ -9,6 +9,7 @@
     "lint": "eslint",
     "serve": "python3 -m http.server 3150 --directory out",
     "pdf": "node scripts/make-pdf.mjs",
+    "og": "node --no-warnings scripts/make-og.mjs",
     "test": "vitest run lib/engine"
   },
   "dependencies": {

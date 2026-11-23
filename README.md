@@ -93,6 +93,18 @@ The script opens `http://localhost:3140/plan/` in your local Chrome through Play
 
 To check the result, rasterize the pages and look at them, for example `pdftoppm -r 60 -png public/LLM_From_Scratch_7_Days.pdf /tmp/plan`.
 
+## Search and sharing
+
+Every page has its own title, description, canonical link, share card and schema.org data (`lib/site.ts`, `lib/schema.ts`). The build also writes `sitemap.xml`, `robots.txt`, `manifest.webmanifest`, and `llms.txt` plus `llms-full.txt` for AI assistants. Lesson pages prerender every step as text under "Read the whole lesson as text", and the day pages keep each interview answer in the HTML, hidden until opened.
+
+All of these links are absolute, so build with the real address:
+
+```bash
+NEXT_PUBLIC_SITE_URL=https://your-domain.example bun run build
+```
+
+Without it they point at `https://tokenbytoken.app`. The share cards in `public/og/` and the app icons come from `bun run og`, which draws each page's title cut into real GPT tokens with your local Chrome. Rerun it after changing a day's or a lesson's title or promise.
+
 ## Scripts and checks
 
 | Command | What it does |
@@ -101,6 +113,7 @@ To check the result, rasterize the pages and look at them, for example `pdftoppm
 | `node scripts/shot-lesson.mjs <day> <slug> <outDir>` | Screenshot every step of one lesson. |
 | `node scripts/montage.mjs <out.png> <cols> <width> <img...>` | Combine screenshots into one grid image. |
 | `bun run pdf` | Regenerate the plan PDF. |
+| `bun run og` | Regenerate the share cards and app icons. |
 | `npx tsc --noEmit -p .` | Type-check. |
 | `bun run lint` | ESLint. |
 | `bun run test` | Tests for the in-browser training engine (gradient checks, initial loss, determinism). |

@@ -14,7 +14,7 @@ import {
   Sparkles,
 } from "lucide-react";
 import Link from "next/link";
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { lessonKey } from "@/content/curriculum";
 import { PIPELINE } from "@/lib/pipeline";
 import { lessonFraction, setTick, useProgress } from "@/lib/progress";
@@ -385,15 +385,32 @@ function ExperimentCard({ e }: { e: DayContent["experiments"][number] }) {
 
 function CheckCard({ id, n, q, a }: { id: string; n: number; q: string; a: string }) {
   const [open, setOpen] = useState(false);
+  const answer = useRef<HTMLParagraphElement>(null);
   const progress = useProgress();
   const got = !!progress.ticks[id];
+  // The answer stays in the HTML for search engines. React only writes hidden as a boolean, so
+  // upgrade it to "until-found": find in page can then reveal it, and the button follows.
+  useEffect(() => {
+    const el = answer.current;
+    if (!el) return;
+    if (!open) el.setAttribute("hidden", "until-found");
+    const reveal = () => setOpen(true);
+    el.addEventListener("beforematch", reveal);
+    return () => el.removeEventListener("beforematch", reveal);
+  }, [open]);
   return (
     <article className={`panel p-5 ${got ? "border-ok/50" : ""}`}>
       <div className="flex items-start gap-3">
         <span className="tabular mt-0.5 font-mono text-[13px] font-bold text-ink-3">Q{n}</span>
         <div className="min-w-0 flex-1">
           <h3 className="text-[16px] font-semibold leading-snug text-ink">{q}</h3>
-          {open && <p className="mt-3 border-l-[3px] border-accent pl-3 text-[14.5px] leading-relaxed text-ink-2">{a}</p>}
+          <p
+            ref={answer}
+            hidden={!open}
+            className="mt-3 border-l-[3px] border-accent pl-3 text-[14.5px] leading-relaxed text-ink-2"
+          >
+            {a}
+          </p>
           <div className="mt-3 flex flex-wrap gap-2">
             <button type="button" className="btn btn-ghost !py-1.5" onClick={() => setOpen((o) => !o)} aria-expanded={open}>
               <Eye size={15} /> {open ? "Hide the answer" : "Show the answer"}

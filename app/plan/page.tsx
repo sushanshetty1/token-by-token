@@ -1,7 +1,10 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { BrandMark } from "@/components/shell/Brand";
+import { JsonLd } from "@/components/seo/JsonLd";
 import { ALL_LESSONS, DAYS, TOTAL_MINUTES } from "@/content/curriculum";
+import { breadcrumbs } from "@/lib/schema";
+import { abs, ogImage, pageMeta } from "@/lib/site";
 import {
   BACKUP,
   DAILY_LOOP,
@@ -26,10 +29,39 @@ import { DayRefs, Sheet, SheetHead, displayUrl, fmtHours } from "./parts";
 import { PlanToolbar } from "./PlanToolbar";
 import { Tick } from "./Tick";
 
-export const metadata: Metadata = {
-  title: "The 7-day plan",
-  description: "Build an LLM from scratch in 7 days: what to learn, watch, build and check each day, as a page and a printable PDF.",
-};
+export const metadata: Metadata = pageMeta({
+  title: "7-day study plan: build an LLM from scratch",
+  description:
+    "Learn how LLMs work in a week: what to study, which Karpathy and 3Blue1Brown chapters to watch, what to build and how to check yourself. Free PDF.",
+  path: "/plan/",
+  image: ogImage("plan"),
+  imageAlt: "The 7-day plan for building an LLM from scratch",
+  type: "article",
+  keywords: ["LLM study plan", "learn LLMs in a week", "transformer study guide pdf"],
+});
+
+const PLAN_LD = [
+  {
+    "@type": "LearningResource",
+    "@id": abs("/plan/#plan"),
+    name: "Build an LLM from scratch in 7 days: the study plan",
+    description: "What to learn, watch, build and check on each of the seven days, with a final project and interview drill.",
+    url: abs("/plan/"),
+    image: abs(ogImage("plan")),
+    learningResourceType: ["Study guide", "Syllabus"],
+    educationalLevel: "Beginner to advanced",
+    inLanguage: "en",
+    isAccessibleForFree: true,
+    isPartOf: { "@id": abs("/#course") },
+    encoding: {
+      "@type": "MediaObject",
+      contentUrl: abs("/LLM_From_Scratch_7_Days.pdf"),
+      encodingFormat: "application/pdf",
+      name: "LLM_From_Scratch_7_Days.pdf",
+    },
+  },
+  breadcrumbs([{ name: "The 7-day plan", path: "/plan/" }]),
+];
 
 /* Print rules that Tailwind variants cannot express. Scoped to the plan. */
 const PRINT_CSS = `
@@ -66,6 +98,7 @@ export default function PlanPage() {
   return (
     <>
       <style dangerouslySetInnerHTML={{ __html: PRINT_CSS }} />
+      <JsonLd data={PLAN_LD} />
       <PlanToolbar />
       <PlanDoc>
         <Cover hours={hours} videos={videos} questions={dayQuestions + allFinal.length + NAPKIN.length} />

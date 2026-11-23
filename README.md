@@ -77,6 +77,8 @@ text → tokens → embeddings → attention + MLP blocks → logits → loss �
 
 Every lesson can also be read as plain text, which is how search engines and screen readers get the whole thing.
 
+**After Day 7, build something.** [What to build next](https://llm.sushans.dev/build/) starts you on [`tiny_gpt.py`](public/starter/tiny_gpt.py), a character-level GPT in one PyTorch file that trains on a laptop CPU in about two minutes. Five "change one thing" experiments come with the numbers from real runs. Then there are 18 projects, sized for an evening, a weekend or a week, each with first steps, a finish line and a prompt for your AI assistant.
+
 ## Quick start
 
 You need [Bun](https://bun.sh) 1.3+ and Node 22+.
@@ -118,7 +120,7 @@ Beyond the original *Zero to Hero* path, it covers inference (prefill and decode
 Each lesson is a module with 7 to 11 steps and one `Stage` that redraws a 960 × 540 SVG scene for every step. Steps carry a kind (intuition, problem, mechanism, insight, try, recap), a short body, an optional "guess before you look" question, highlighted lines of real PyTorch code, and live readings in the rail above the stage.
 
 ```
-app/                    routes: course map, /day/<n>/, /day/<n>/<lesson>/, /plan/, /cheatsheet/,
+app/                    routes: course map, /day/<n>/, /day/<n>/<lesson>/, /plan/, /cheatsheet/, /build/,
                         plus sitemap, robots, manifest and llms.txt
 content/
   curriculum.ts         the seven days, in order

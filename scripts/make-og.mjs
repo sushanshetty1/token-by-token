@@ -40,6 +40,13 @@ const cards = [
     sub: "Tensor shapes, the formulas, the model sizes and the words that come up again and again.",
     pills: ["Shapes", "Formulas", "Glossary"],
   },
+  {
+    slug: "build",
+    kicker: "After the course",
+    title: "What to build next",
+    sub: "A GPT in one file that trains on a laptop in two minutes, then 18 projects for an evening, a weekend or a week.",
+    pills: ["Starter code", "18 projects", "Free"],
+  },
   ...days.map((d) => ({
     slug: `day-${d.n}`,
     kicker: `Day ${d.n} of 7`,

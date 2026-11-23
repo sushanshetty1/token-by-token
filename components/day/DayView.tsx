@@ -244,9 +244,14 @@ export function DayView({ day, prev, next }: { day: DayContent; prev?: DayConten
             Day {next.n}: {next.title} <ArrowRight size={15} />
           </Link>
         ) : (
-          <Link href="/day/7/whiteboard/" className="btn btn-primary">
-            Take the whiteboard test <ArrowRight size={15} />
-          </Link>
+          <span className="flex flex-wrap gap-2">
+            <Link href="/day/7/whiteboard/" className="btn btn-ghost">
+              Take the whiteboard test
+            </Link>
+            <Link href="/build/" className="btn btn-primary">
+              What to build next <ArrowRight size={15} />
+            </Link>
+          </span>
         )}
       </nav>
     </div>

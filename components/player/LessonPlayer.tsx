@@ -276,8 +276,8 @@ function Narrative({
                 <ArrowRight size={16} className="shrink-0" />
               </Link>
             ) : (
-              <Link href="/" className="btn btn-primary min-w-0 flex-1 justify-between">
-                <span>Back to the course map</span>
+              <Link href="/build/" className="btn btn-primary min-w-0 flex-1 justify-between">
+                <span>What to build next</span>
                 <ArrowRight size={16} className="shrink-0" />
               </Link>
             )}

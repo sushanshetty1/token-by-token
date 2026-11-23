@@ -3,6 +3,7 @@
 import { ArrowRight, Check, Clock } from "lucide-react";
 import Link from "next/link";
 import { useState } from "react";
+import { IDEAS } from "@/content/build";
 import { ALL_LESSONS, DAYS, TOTAL_MINUTES, lessonKey } from "@/content/curriculum";
 import { PIPELINE } from "@/lib/pipeline";
 import { useProgress } from "@/lib/progress";
@@ -147,6 +148,22 @@ export function Home() {
             </Link>
           </li>
         </ol>
+
+        <Link
+          href="/build/"
+          className="panel mt-3 flex flex-col gap-3 p-5 transition-[border-color,box-shadow] hover:border-ink hover:shadow-[var(--shadow-2)] sm:flex-row sm:items-center sm:justify-between"
+        >
+          <span>
+            <span className="font-display block text-[1.2rem] font-bold leading-tight text-ink">Then build something of your own</span>
+            <span className="mt-1 block text-[14px] text-ink-2">
+              A GPT in one Python file that trains on a laptop in two minutes, and {IDEAS.length} projects for an evening, a
+              weekend or a week.
+            </span>
+          </span>
+          <span className="flex shrink-0 items-center gap-1 text-[14px] font-semibold text-accent">
+            What to build next <ArrowRight size={15} />
+          </span>
+        </Link>
       </section>
 
       {/* How a day works */}

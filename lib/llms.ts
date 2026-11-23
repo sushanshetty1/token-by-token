@@ -1,4 +1,5 @@
 import { ALL_LESSONS, DAYS, TOTAL_MINUTES } from "@/content/curriculum";
+import { IDEAS, SIZES } from "@/content/build";
 import { SITE, abs } from "@/lib/site";
 
 const head = () =>
@@ -27,6 +28,8 @@ export function llmsIndex() {
     `- [The 7-day plan](${abs("/plan/")}): what to learn, watch, build and check each day`,
     `- [Printable plan (PDF)](${abs("/LLM_From_Scratch_7_Days.pdf")})`,
     `- [Interview cheat sheet](${abs("/cheatsheet/")}): tensor shapes, formulas, model sizes and a glossary`,
+    `- [What to build next](${abs("/build/")}): a one-file GPT that trains on a laptop, and ${IDEAS.length} LLM projects sized for an evening, a weekend or a week`,
+    `- [tiny_gpt.py](${abs("/starter/tiny_gpt.py")}): the starter, a character-level GPT in one PyTorch file (MIT)`,
     "",
     "## Optional",
     "",
@@ -49,6 +52,10 @@ export function llmsFull() {
     out.push("", "### Build", "", ...d.build.map((b) => `- ${b}`), "", "### Say it out loud", "", ...d.explainOutLoud.map((e) => `- ${e}`));
     out.push("", "### Interview questions", "");
     for (const c of d.checks) out.push(`Q: ${c.q}`, "", `A: ${c.a}`, "");
+  }
+  out.push("## What to build next", "", `URL: ${abs("/build/")}`, "", `Starter: ${abs("/starter/tiny_gpt.py")}, a character-level GPT in one PyTorch file that trains on a laptop CPU in about two minutes.`, "");
+  for (const i of IDEAS) {
+    out.push(`### ${i.title} (${SIZES[i.size].label.toLowerCase()}, ${SIZES[i.size].hours})`, "", i.make, "", i.why, "", ...i.start.map((s, n) => `${n + 1}. ${s}`), "", `Done when: ${i.done}`, "");
   }
   return out.join("\n");
 }

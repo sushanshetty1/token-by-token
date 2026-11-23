@@ -2,9 +2,10 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { BrandMark } from "@/components/shell/Brand";
 import { JsonLd } from "@/components/seo/JsonLd";
+import { IDEAS } from "@/content/build";
 import { ALL_LESSONS, DAYS, TOTAL_MINUTES } from "@/content/curriculum";
 import { breadcrumbs } from "@/lib/schema";
-import { abs, ogImage, pageMeta } from "@/lib/site";
+import { SITE_URL, abs, ogImage, pageMeta } from "@/lib/site";
 import {
   BACKUP,
   DAILY_LOOP,
@@ -435,6 +436,14 @@ function Project() {
           <p className="font-display mt-1.5 text-[1.15rem] font-bold leading-snug text-ink">&ldquo;{STORY}&rdquo;</p>
         </div>
       </div>
+      <p className="mt-4 text-[14px] text-ink-2">
+        Want a smaller first step, or a bigger next one? A one-file GPT to start from and {IDEAS.length} more projects, each with its
+        first three moves, are at{" "}
+        <Link href="/build/" className="font-mono text-accent underline-offset-4 hover:underline print:no-underline">
+          {SITE_URL.replace(/^https?:\/\//, "")}/build/
+        </Link>
+        .
+      </p>
     </Sheet>
   );
 }

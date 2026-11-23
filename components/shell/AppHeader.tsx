@@ -13,6 +13,7 @@ const NAV = [
   { href: "/plan/", label: "7-day plan", match: (p: string) => p.startsWith("/plan") },
   { href: "/cheatsheet/", label: "Cheat sheet", match: (p: string) => p.startsWith("/cheatsheet") },
   { href: "/day/7/whiteboard/", label: "Whiteboard test", match: (p: string) => p.includes("whiteboard") },
+  { href: "/build/", label: "Build next", match: (p: string) => p.startsWith("/build") },
 ];
 
 export function AppHeader() {

@@ -127,6 +127,14 @@ function NavTree({ onNavigate }: { onNavigate?: () => void }) {
           <span className="block font-semibold text-ink">The 7-day plan</span>
           What to watch, build and check each day, printable.
         </Link>
+        <Link
+          href="/build/"
+          onClick={onNavigate}
+          className="mt-2 block rounded-xl border border-rule bg-card-2 p-3 text-[13px] text-ink-2 hover:border-ink"
+        >
+          <span className="block font-semibold text-ink">What to build next</span>
+          A one-file GPT to start from, and 18 projects.
+        </Link>
       </div>
     </div>
   );

@@ -12,6 +12,7 @@ export function CodeDock({
   note,
   open,
   onToggle,
+  maxHeight = 340,
 }: {
   filename: string;
   source: string;
@@ -20,6 +21,7 @@ export function CodeDock({
   note?: string;
   open: boolean;
   onToggle: () => void;
+  maxHeight?: number;
 }) {
   const lines = useMemo(() => highlightPython(source.replace(/\n$/, "")), [source]);
   const scroller = useRef<HTMLDivElement>(null);
@@ -78,7 +80,7 @@ export function CodeDock({
         )}
       </header>
       {open && (
-        <div ref={scroller} className="relative max-h-[340px] overflow-auto bg-card py-2">
+        <div ref={scroller} className="relative overflow-auto bg-card py-2" style={{ maxHeight }}>
           <pre className="font-mono text-[12.75px] leading-[1.7]">
             {lines.map((toks, i) => {
               const n = i + 1;

@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import OG_VERSIONS from "./og-versions.json";
 
 /**
  * Where the site is served. Canonical links, the sitemap, share cards and
@@ -40,7 +41,10 @@ export const SITE = {
 
 export const abs = (path = "/") => new URL(path, `${SITE_URL}/`).toString();
 
-export const ogImage = (slug: string) => `/og/${slug}.png`;
+export const ogImage = (slug: string) => {
+  const v = (OG_VERSIONS as Record<string, string>)[slug];
+  return `/og/${slug}.png${v ? `?v=${v}` : ""}`;
+};
 
 /** ISO 8601 duration from minutes, for schema.org timeRequired. */
 export const isoMinutes = (m: number) => {

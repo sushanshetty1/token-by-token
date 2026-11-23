@@ -5,7 +5,7 @@ import "./globals.css";
 import { AppHeader } from "@/components/shell/AppHeader";
 import { MotionProvider } from "@/components/shell/MotionProvider";
 import { themeScript } from "@/components/shell/ThemeToggle";
-import { SITE, SITE_URL } from "@/lib/site";
+import { SITE, SITE_URL, ogImage } from "@/lib/site";
 
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
@@ -33,13 +33,13 @@ export const metadata: Metadata = {
     url: "/",
     title: `${SITE.name}: ${SITE.tagline}`,
     description: SITE.description,
-    images: [{ url: "/og/home.png", width: 1200, height: 630, alt: `${SITE.name}: ${SITE.tagline}` }],
+    images: [{ url: ogImage("home"), width: 1200, height: 630, alt: `${SITE.name}: ${SITE.tagline}` }],
   },
   twitter: {
     card: "summary_large_image",
     title: `${SITE.name}: ${SITE.tagline}`,
     description: SITE.description,
-    images: ["/og/home.png"],
+    images: [ogImage("home")],
   },
   appleWebApp: { title: SITE.name, statusBarStyle: "default", capable: true },
   other: { "msapplication-TileColor": "#17212b" },

@@ -1,7 +1,8 @@
 // Draw the share cards (public/og/*.png, 1200x630) and the app icons with the local Chrome.
 // Every card shows its own title cut into real GPT tokens, the idea the course is named after.
 // Usage: node scripts/make-og.mjs   (rerun after changing a day's or lesson's title or promise)
-import { mkdirSync, readFileSync } from "node:fs";
+import { createHash } from "node:crypto";
+import { mkdirSync, readFileSync, writeFileSync } from "node:fs";
 import { dirname, resolve } from "node:path";
 import { fileURLToPath, pathToFileURL } from "node:url";
 import { encode, decode } from "gpt-tokenizer";
@@ -125,6 +126,11 @@ try {
     await page.evaluate(() => document.fonts.ready);
     await page.screenshot({ path: resolve(outDir, `${c.slug}.png`), clip: { x: 0, y: 0, width: 1200, height: 630 } });
   }
+  // A fingerprint per card goes into the URL, so a redrawn card is never served from a CDN or chat-app cache.
+  const versions = Object.fromEntries(
+    cards.map((c) => [c.slug, createHash("sha1").update(readFileSync(resolve(outDir, `${c.slug}.png`))).digest("hex").slice(0, 10)]),
+  );
+  writeFileSync(resolve(root, "lib/og-versions.json"), `${JSON.stringify(versions, null, 2)}\n`);
   console.log(`Wrote ${cards.length} cards to public/og/`);
 
   const icon = async (size, file, { maskable = false } = {}) => {

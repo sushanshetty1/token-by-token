@@ -1,36 +1,111 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Token by Token
 
-## Getting Started
+Build an LLM from scratch in 7 days. Token by Token is a Next.js app that teaches how a large language model works from the inside: animated, step-by-step lessons build the picture in your head, Karpathy's and 3Blue1Brown's videos make you build it in code, and a self-check at the end of every day makes sure you can explain it in an interview.
 
-First, run the development server:
+The finish line is the whiteboard test: draw the whole path from memory and say what flows along every arrow.
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+```
+text -> tokens -> embeddings -> attention + MLP blocks -> logits -> loss -> backprop -> updated weights
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+The approach is AI-first. Let AI type the code; you must be able to explain every line.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## What is in the app
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+| Route | What it is |
+| --- | --- |
+| `/` | The course map: the path diagram, the seven days, and a live tokenizer (GPT-2 and GPT-4o BPE in the browser). |
+| `/day/<n>/` | One day: its lessons, the video chapters to watch, skim or skip, the build, experiments, and interview questions with model answers. |
+| `/day/<n>/<slug>/` | One animated lesson, played step by step with predictions, a code dock and a live stage. |
+| `/plan/` | The 7-day study plan as a printable document, with a Download PDF button. |
+| `/cheatsheet/` | The interview cheat sheet: shapes, formulas and numbers worth knowing. |
+| `/day/7/whiteboard/` | The whiteboard test and the interview drill. |
 
-## Learn More
+Day 5's "Train a tiny GPT" lesson trains a real character-level transformer in your browser. The engine is plain TypeScript with hand-written forward and backward passes (`lib/engine/`), running in a Web Worker.
 
-To learn more about Next.js, take a look at the following resources:
+Progress (lessons seen, ticked checklists) lives in your browser's `localStorage` under `tbt:progress:v1`. Ticks on the plan and on the day pages share the same ids, so ticking a question in one place ticks it in the other.
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## Run it
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+You need [Bun](https://bun.sh) and Node. Screenshots and the PDF also need Google Chrome installed.
 
-## Deploy on Vercel
+```bash
+bun install
+bun run dev            # http://localhost:3000
+bunx next dev -p 3140  # the port the scripts below expect by default
+```
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+Build a static site:
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+```bash
+bun run build          # static export to out/
+python3 -m http.server -d out 8080
+```
+
+`next.config.ts` sets `output: "export"` and `trailingSlash: true`, so every page is a plain HTML file in `out/` and the app can be hosted anywhere that serves static files.
+
+## How the 7 days work
+
+About 18 hours in total, two to three hours a day. Every day runs the same loop: learn it in the app, watch the marked video chapters, build it with AI while you explain each line, then check yourself out loud.
+
+| Day | Title | Lessons |
+| --- | --- | --- |
+| 1 | The whole picture | A prompt's journey; One token at a time |
+| 2 | How networks learn | Derivatives on a graph; Backprop, node by node; The training loop |
+| 3 | Tokens and embeddings | Tokenization with BPE; Embeddings and positions; A bigram model and its loss |
+| 4 | Self-attention | Tokens talking; Queries, keys and values; Multi-head attention |
+| 5 | The block, and training it | Anatomy of a block; Train a tiny GPT; Break it on purpose |
+| 6 | Scale, and how it answers you | Counting GPT-2's parameters; Training at scale; How the model answers you |
+| 7 | From GPT to ChatGPT | From GPT to ChatGPT; What changed since GPT-2; The whiteboard test |
+
+Beyond the original Zero to Hero path, the plan covers inference (prefill and decode, the KV cache, sampling), what changed since GPT-2 (RoPE, RMSNorm, SwiGLU, grouped-query attention, mixture of experts), napkin math, and a timed interview drill. It ends with a mini project: train your own small GPT on text you care about and write it up.
+
+## How the content is organised
+
+```
+content/
+  curriculum.ts          the seven days, in order
+  lessons.ts             lazy loaders for every lesson module
+  day-<n>/
+    day.ts               the day's data: schedule, lessons, videos and chapters, build, prompts,
+                         experiments, interview questions, lines to say out loud
+    <slug>/index.tsx     one lesson
+lib/types.ts             the contracts: DayContent, LessonModule, LessonStep, StageProps
+lib/pipeline.ts          the stations of the whiteboard path
+components/player/       the lesson player and code dock
+components/viz/          SVG primitives and controls every stage is drawn with
+app/plan/                the 7-day plan page and its print layout
+```
+
+A lesson is a `LessonModule`: 3 to 5 learning outcomes, a legend for every color on the stage, optional real PyTorch code, and 7 to 11 steps. Each step has a kind (intuition, problem, mechanism, insight, try, recap), a title and a short body, and can add a prediction question to answer before reading on, highlight lines of the code, and update live readings. The `Stage` component draws one evolving scene on a 960 by 540 canvas and redraws for every step.
+
+Read [AUTHORING.md](AUTHORING.md) before writing or changing a lesson. It has the visual language, the writing rules (no em dashes, sentence case, concrete numbers), the rules for working in parallel, and how to verify a lesson.
+
+## Regenerate the PDF
+
+The Download PDF button on `/plan/` serves `public/LLM_From_Scratch_7_Days.pdf`. It is generated from the page itself, so regenerate it whenever a `day.ts` changes:
+
+```bash
+bunx next dev -p 3140           # in one terminal
+node scripts/make-pdf.mjs       # in another; prints the page count
+```
+
+The script opens `http://localhost:3140/plan/` in your local Chrome through Playwright, in the light theme with print styles, and writes an A4 PDF with page numbers. Pass a different address as the first argument (for example `node scripts/make-pdf.mjs http://localhost:3000/plan/`) or `--out=path.pdf` to write somewhere else. It refuses to write anything if the page fails to render.
+
+To check the result, rasterize the pages and look at them, for example `pdftoppm -r 60 -png public/LLM_From_Scratch_7_Days.pdf /tmp/plan`.
+
+## Scripts and checks
+
+| Command | What it does |
+| --- | --- |
+| `node scripts/shot.mjs <url> <out.png>` | Screenshot a page (`--dark`, `--w=390 --h=844` for a phone, `--full`, `--wait=3000`). Prints page errors. |
+| `node scripts/shot-lesson.mjs <day> <slug> <outDir>` | Screenshot every step of one lesson. |
+| `node scripts/montage.mjs <out.png> <cols> <width> <img...>` | Combine screenshots into one grid image. |
+| `node scripts/make-pdf.mjs` | Regenerate the plan PDF. |
+| `npx tsc --noEmit -p .` | Type-check. |
+| `bun run lint` | ESLint. |
+| `npx vitest run lib/engine` | Tests for the in-browser training engine. |
+
+## Credits
+
+The videos and reference code are by Andrej Karpathy (micrograd, minbpe, ng-video-lecture, build-nanogpt, nanoGPT and nanochat) and 3Blue1Brown. This app links to them rather than copying them, and its code samples are compact versions written in the style of micrograd and nanoGPT (both MIT licensed).

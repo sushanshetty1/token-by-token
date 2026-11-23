@@ -11,6 +11,7 @@ const NAV = [
   { href: "/", label: "Course map", match: (p: string) => p === "/" },
   { href: "/day/1/", label: "Lessons", match: (p: string) => p.startsWith("/day/") && !p.includes("whiteboard") },
   { href: "/plan/", label: "7-day plan", match: (p: string) => p.startsWith("/plan") },
+  { href: "/cheatsheet/", label: "Cheat sheet", match: (p: string) => p.startsWith("/cheatsheet") },
   { href: "/day/7/whiteboard/", label: "Whiteboard test", match: (p: string) => p.includes("whiteboard") },
 ];
 

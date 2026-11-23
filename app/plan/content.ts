@@ -60,6 +60,13 @@ export const RULES: Rule[] = [
   },
 ];
 
+export const SETUP: string[] = [
+  "Python 3 with PyTorch on your laptop (pip install torch). The CPU build is all you need until Day 5.",
+  "A free Google Colab or Kaggle account, so Day 5's training run is one click away.",
+  "An AI assistant in a window next to the video, for writing code and grading your answers.",
+  "A paper notebook for whiteboard drawings and your confusion log. Drawing the shapes by hand is part of the learning.",
+];
+
 /** Short summaries for the week table. Titles, lessons and times come from the day data. */
 export const GLANCE: Record<number, { watch: string; build: string }> = {
   1: { watch: "3Blue1Brown, deep learning chapters 5 and 6 (7 is optional)", build: "No code: draw the path from memory, then again with shapes" },

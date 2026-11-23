@@ -20,7 +20,7 @@ function StationBox({ s, x, y, w, fill }: { s: Station; x: number; y: number; w:
     <g>
       <rect x={x} y={y + 3} width={w} height={BH} rx={10} fill="var(--ink)" />
       <rect x={x} y={y} width={w} height={BH} rx={10} fill={fill} stroke="var(--ink)" strokeWidth={1.6} />
-      <text x={x + w / 2} y={y + 26} textAnchor="middle" fontSize={15} fontWeight={700}>
+      <text x={x + w / 2} y={y + 26.5} textAnchor="middle" fontSize={16} fontWeight={700}>
         {s.label}
       </text>
     </g>
@@ -76,7 +76,7 @@ export function FinishLine() {
             strokeWidth={1.6}
             markerEnd="url(#fl-arrow)"
           />
-          <text x={ARROW_X + 12} y={rowY(i) + BH + 22} fontSize={13} className="mono" fill="var(--ink-2)">
+          <text x={ARROW_X + 12} y={rowY(i) + BH + 22} fontSize={13.5} className="mono" fill="var(--ink-2)">
             {s.out}
           </text>
         </g>
@@ -133,12 +133,12 @@ export function FinishLine() {
       <line x1={RX + 30} y1={lossY - 3} x2={RX + 30} y2={backpropY + BH + 4} stroke="var(--ink)" strokeWidth={1.6} strokeDasharray="5 4" markerEnd="url(#fl-arrow)" />
       <line x1={RX + 30} y1={backpropY - 3} x2={RX + 30} y2={updateY + BH + 4} stroke="var(--ink)" strokeWidth={1.6} strokeDasharray="5 4" markerEnd="url(#fl-arrow)" />
       {loss && (
-        <text x={RX + 42} y={(lossY + backpropY + BH) / 2 + 5} fontSize={13} className="mono" fill="var(--ink-2)">
+        <text x={RX + 42} y={(lossY + backpropY + BH) / 2 + 5} fontSize={13.5} className="mono" fill="var(--ink-2)">
           {loss.out}
         </text>
       )}
       {backprop && (
-        <text x={RX + 42} y={(backpropY + updateY + BH) / 2 + 5} fontSize={13} className="mono" fill="var(--ink-2)">
+        <text x={RX + 42} y={(backpropY + updateY + BH) / 2 + 5} fontSize={13.5} className="mono" fill="var(--ink-2)">
           {backprop.out}
         </text>
       )}

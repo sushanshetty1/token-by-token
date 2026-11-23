@@ -14,6 +14,7 @@ import {
   PROJECT,
   RESUME_LINE,
   RULES,
+  SETUP,
   SKIP,
   STORY,
   type FinalCheck,
@@ -35,9 +36,10 @@ const PRINT_CSS = `
 @media print {
   .plan-doc { font-size: 15px; }
   .plan-doc .plan-keep { break-inside: avoid; break-after: avoid; }
-  .plan-doc a { color: inherit; text-decoration: none; }
+  .plan-doc a { text-decoration: none; }
   .plan-doc .plan-sheet + .plan-sheet { margin-top: 0; }
   .plan-doc svg { break-inside: avoid; }
+  nextjs-portal { display: none !important; }
 }
 `;
 
@@ -54,14 +56,15 @@ export default function PlanPage() {
       <PlanToolbar />
       <main className="plan-doc mx-auto max-w-[880px] space-y-6 px-3 pb-24 pt-6 sm:px-6 sm:pt-8 print:max-w-none print:space-y-0 print:px-0 print:pb-0 print:pt-0">
         <Cover hours={hours} videos={videos} questions={dayQuestions + allFinal.length + NAPKIN.length} />
-        <HowToLearn />
+        <HowToLearn hours={hours} />
         <Week />
         {DAYS.map((d) => (
           <DaySection key={d.n} day={d} />
         ))}
         <SelfCheck />
         <Project />
-        <AfterTheWeek />
+        <SafeToSkip />
+        <Resources />
       </main>
     </>
   );
@@ -70,10 +73,10 @@ export default function PlanPage() {
 function Cover({ hours, videos, questions }: { hours: number; videos: number; questions: number }) {
   const stats = [
     { k: "Days", v: "7" },
-    { k: "Lessons in the app", v: String(ALL_LESSONS.length) },
-    { k: "Hours, about", v: String(hours) },
+    { k: "Lessons", v: String(ALL_LESSONS.length) },
+    { k: "Hours", v: String(hours) },
     { k: "Videos", v: String(videos) },
-    { k: "Self-check questions", v: String(questions) },
+    { k: "Questions", v: String(questions) },
   ];
   return (
     <Sheet breakBefore={false} className="overflow-hidden">
@@ -83,7 +86,7 @@ function Cover({ hours, videos, questions }: { hours: number; videos: number; qu
         <span className="ml-auto font-mono text-[12.5px] font-semibold text-ink-3">The study plan</span>
       </div>
 
-      <h1 className="font-display mt-10 text-[clamp(2.5rem,7vw,4.4rem)] font-extrabold leading-[0.95] text-ink [font-variation-settings:'wdth'_80] print:mt-12">
+      <h1 className="font-display mt-10 text-[clamp(2.5rem,7vw,4.4rem)] font-extrabold leading-[0.95] text-ink text-balance [font-variation-settings:'wdth'_80] print:mt-14 print:text-[4.2rem]">
         Build an LLM from scratch in 7 days
       </h1>
       <p className="mt-5 max-w-[56ch] text-[clamp(1.05rem,2vw,1.2rem)] leading-relaxed text-ink-2">
@@ -100,54 +103,58 @@ function Cover({ hours, videos, questions }: { hours: number; videos: number; qu
         ))}
       </dl>
 
-      <div className="mt-8 grid gap-7 sm:grid-cols-[minmax(0,0.85fr)_minmax(0,1fr)] sm:gap-8">
-        <div className="space-y-6">
-          <div className="plan-keep rounded-2xl border-[1.5px] border-ink bg-mark-soft p-5 shadow-[var(--press)] print:shadow-none">
-            <p className="font-mono text-[12.5px] font-semibold text-ink-2">The one rule</p>
-            <p className="font-display mt-2 text-[1.45rem] font-bold leading-[1.15] text-ink">
-              Let AI type. You must be able to explain every line.
-            </p>
-            <p className="mt-2.5 text-[14.5px] leading-snug text-ink-2">
-              Typing code is cheap now. Understanding is the skill. If you cannot explain a line out loud, you do not own it yet.
-            </p>
-          </div>
-          <div>
-            <p className="font-mono text-[12.5px] font-semibold text-ink-3">The finish line</p>
-            <p className="font-display mt-1.5 text-[1.3rem] font-bold leading-snug text-ink">
-              Draw this whole path on a whiteboard from memory, and say what flows along every arrow.
-            </p>
-            <p className="mt-2.5 text-[14.5px] leading-snug text-ink-2">
-              Text becomes tokens, tokens become embeddings, attention and MLP blocks refine them, logits score every possible next
-              token. In training, the loss is backpropagated and the weights get a little better. Day 7 ends with exactly this test.
-            </p>
-            <ul className="mt-3 space-y-1 text-[13.5px] text-ink-2">
-              <li className="flex items-center gap-2">
-                <span className="h-[2px] w-5 shrink-0 bg-ink" /> Every time the model reads
-              </li>
-              <li className="flex items-center gap-2">
-                <span className="h-[2px] w-5 shrink-0 bg-accent" /> Generating: each new token is fed back in
-              </li>
-              <li className="flex items-center gap-2">
-                <span className="h-0 w-5 shrink-0 border-t-2 border-dashed border-ink" /> Training only
-              </li>
-            </ul>
-          </div>
+      <div className="plan-keep mt-7 grid gap-x-8 gap-y-3 rounded-2xl border-[1.5px] border-ink bg-mark-soft p-5 shadow-[var(--press)] sm:grid-cols-[minmax(0,1.15fr)_minmax(0,1fr)] sm:items-center sm:p-6 print:shadow-none">
+        <div>
+          <p className="font-mono text-[12.5px] font-semibold text-ink-2">The one rule</p>
+          <p className="font-display mt-1.5 text-[clamp(1.35rem,2.6vw,1.6rem)] font-bold leading-[1.12] text-ink">
+            Let AI type. You must be able to explain every line.
+          </p>
         </div>
-        <figure className="graph-paper rounded-2xl border border-rule p-3 sm:p-4">
-          <FinishLine />
+        <p className="text-[14.5px] leading-snug text-ink-2">
+          Typing code is cheap now. Understanding is the skill. If you cannot explain a line out loud, you do not own it yet: ask,
+          read and rerun until you can.
+        </p>
+      </div>
+
+      <div className="mt-8 grid items-start gap-6 sm:grid-cols-[minmax(0,0.74fr)_minmax(0,1.26fr)] sm:gap-8">
+        <div className="sm:pt-2">
+          <p className="font-mono text-[12.5px] font-semibold text-ink-3">The finish line</p>
+          <p className="font-display mt-1.5 text-[1.3rem] font-bold leading-snug text-ink text-balance">
+            Draw this path on a whiteboard from memory, and say what flows along every arrow.
+          </p>
+          <p className="mt-2.5 text-[14.5px] leading-snug text-ink-2">
+            Text becomes tokens, tokens become vectors, attention and MLP blocks refine them, and logits score every possible next
+            token. In training, the loss is backpropagated and every weight gets a little better. Day 7 ends with this exact test.
+          </p>
+          <ul className="mt-4 space-y-1.5 text-[13.5px] text-ink-2">
+            <li className="flex items-center gap-2.5">
+              <span className="h-[2px] w-6 shrink-0 bg-ink" /> Every time the model reads
+            </li>
+            <li className="flex items-center gap-2.5">
+              <span className="h-[2px] w-6 shrink-0 bg-accent" /> Generating, one token at a time
+            </li>
+            <li className="flex items-center gap-2.5">
+              <span className="h-0 w-6 shrink-0 border-t-2 border-dashed border-ink" /> Training only
+            </li>
+          </ul>
+        </div>
+        <figure className="graph-paper scrollbar-thin overflow-x-auto rounded-2xl border border-rule p-3 sm:p-4 print:overflow-visible">
+          <div className="min-w-[430px] sm:min-w-0 print:min-w-0">
+            <FinishLine />
+          </div>
         </figure>
       </div>
     </Sheet>
   );
 }
 
-function HowToLearn() {
+function HowToLearn({ hours }: { hours: number }) {
   return (
     <Sheet id="how">
       <SheetHead
         eyebrow="Before you start"
         title="How to learn fast with AI"
-        intro="Eighteen hours is enough if you spend them on understanding instead of typing. Every day runs the same four-step loop, and the day sections below follow it."
+        intro={`About ${hours} hours is enough if you spend them on understanding instead of typing. Every day runs the same four-step loop, and each day section below follows it.`}
       />
       <ol className="mt-6 grid gap-3 sm:grid-cols-2">
         {DAILY_LOOP.map((s, i) => (
@@ -172,6 +179,17 @@ function HowToLearn() {
           </li>
         ))}
       </ol>
+
+      <div className="mt-8 break-inside-avoid rounded-xl border border-dashed border-rule-strong p-4 sm:p-5">
+        <h3 className="text-[16px] font-bold text-ink">Set up once, before Day 1</h3>
+        <ul className="mt-2 grid gap-x-6 gap-y-0.5 sm:grid-cols-2">
+          {SETUP.map((t, i) => (
+            <Tick key={t} id={`plan:setup:${i}`} size="sm">
+              {t}
+            </Tick>
+          ))}
+        </ul>
+      </div>
     </Sheet>
   );
 }
@@ -197,7 +215,7 @@ function Week() {
             <th className="w-[44px] py-2 pr-2 font-semibold">Day</th>
             <th className="py-2 pr-3 font-semibold">Learn in the app</th>
             <th className="py-2 pr-3 font-semibold">Watch, then build</th>
-            <th className="w-[76px] py-2 text-right font-semibold">Time</th>
+            <th className="w-[96px] whitespace-nowrap py-2 text-right font-semibold">Time</th>
           </tr>
         </thead>
         <tbody>
@@ -225,7 +243,7 @@ function Week() {
                   {g?.build}
                 </p>
               </td>
-              <td className="tabular py-3 text-right font-mono text-[13px] text-ink">{fmtHours(mins)}</td>
+              <td className="tabular whitespace-nowrap py-3 text-right font-mono text-[13px] text-ink">{fmtHours(mins)}</td>
             </tr>
           ))}
         </tbody>
@@ -234,7 +252,7 @@ function Week() {
             <td colSpan={3} className="pt-3 text-[13.5px] font-semibold text-ink">
               Total
             </td>
-            <td className="tabular pt-3 text-right font-mono text-[13px] font-bold text-ink">{fmtHours(TOTAL_MINUTES)}</td>
+            <td className="tabular whitespace-nowrap pt-3 text-right font-mono text-[13px] font-bold text-ink">{fmtHours(TOTAL_MINUTES)}</td>
           </tr>
         </tfoot>
       </table>
@@ -278,7 +296,7 @@ function SelfCheck() {
   return (
     <Sheet id="self-check">
       <SheetHead
-        eyebrow="Day 7"
+        eyebrow="The final check"
         title="Self-check: you are done when you can answer these"
         intro="Answer each one out loud in two to five sentences, as if an interviewer asked. No notes. If you stall, go back to the day in the tag."
       />
@@ -374,58 +392,60 @@ function Project() {
   );
 }
 
-function AfterTheWeek() {
+function SafeToSkip() {
   return (
-    <Sheet id="later">
-      <div className="grid gap-8">
-        <div>
-          <SheetHead eyebrow="Leave for later" title="Safe to skip for now" />
-          <ul className="mt-4 grid gap-x-6 gap-y-3 sm:grid-cols-2">
-            {SKIP.map((s) => (
-              <li key={s.title} className="break-inside-avoid border-l-2 border-rule-strong pl-3">
-                <p className="text-[14.5px] font-bold leading-snug text-ink">{s.title}</p>
-                <p className="mt-0.5 text-[13.5px] leading-snug text-ink-2">{s.why}</p>
-              </li>
-            ))}
-          </ul>
-        </div>
-
-        <div>
-          <SheetHead eyebrow="Only if you are stuck" title="Backup resources" />
-          <ul className="mt-4 divide-y divide-rule rounded-xl border border-rule">
-            {BACKUP.map((b) => (
-              <li key={b.title} className="grid break-inside-avoid gap-x-4 gap-y-0.5 px-4 py-2.5 sm:grid-cols-[minmax(0,1fr)_auto]">
-                <div className="min-w-0">
-                  <p className="text-[14.5px] leading-snug text-ink">
-                    <a href={b.url} target="_blank" rel="noreferrer" className="font-bold underline-offset-4 hover:underline">
-                      {b.title}
-                    </a>
-                    <span className="text-ink-3">, {b.by}</span>
-                  </p>
-                  <p className="text-[13.5px] leading-snug text-ink-2">{b.why}</p>
-                </div>
-                <a
-                  href={b.url}
-                  target="_blank"
-                  rel="noreferrer"
-                  className="self-start break-all font-mono text-[12.5px] text-accent underline-offset-4 hover:underline sm:pt-0.5 sm:text-right"
-                >
-                  {displayUrl(b.url)}
-                </a>
-              </li>
-            ))}
-          </ul>
-        </div>
-
-        <div className="break-inside-avoid rounded-2xl border-[1.5px] border-ink bg-accent-soft p-5 shadow-[var(--press)] print:shadow-none">
-          <p className="font-mono text-[12.5px] font-semibold text-ink-2">Next step</p>
-          <h2 className="font-display mt-1 text-[1.5rem] font-bold leading-tight text-ink">{NEXT_STEP.title}</h2>
-          {NEXT_STEP.body.map((p) => (
-            <p key={p} className="mt-2 max-w-[68ch] text-[14.5px] leading-snug text-ink-2">
-              {p}
-            </p>
+    <Sheet id="skip" breakBefore={false}>
+      <div className="print:mt-10 print:border-t print:border-rule print:pt-6">
+        <SheetHead eyebrow="Leave for later" title="Safe to skip for now" />
+        <ul className="mt-4 grid gap-x-6 gap-y-3 sm:grid-cols-2">
+          {SKIP.map((s) => (
+            <li key={s.title} className="break-inside-avoid border-l-2 border-rule-strong pl-3">
+              <p className="text-[14.5px] font-bold leading-snug text-ink">{s.title}</p>
+              <p className="mt-0.5 text-[13.5px] leading-snug text-ink-2">{s.why}</p>
+            </li>
           ))}
-        </div>
+        </ul>
+      </div>
+    </Sheet>
+  );
+}
+
+function Resources() {
+  return (
+    <Sheet id="resources">
+      <SheetHead eyebrow="Only if you are stuck" title="Backup resources" />
+      <ul className="mt-4 divide-y divide-rule rounded-xl border border-rule">
+        {BACKUP.map((b) => (
+          <li key={b.title} className="grid break-inside-avoid gap-x-4 gap-y-0.5 px-4 py-2.5 sm:grid-cols-[minmax(0,1fr)_auto]">
+            <div className="min-w-0">
+              <p className="text-[14.5px] leading-snug text-ink">
+                <a href={b.url} target="_blank" rel="noreferrer" className="font-bold underline-offset-4 hover:underline">
+                  {b.title}
+                </a>
+                <span className="text-ink-3">, {b.by}</span>
+              </p>
+              <p className="text-[13.5px] leading-snug text-ink-2">{b.why}</p>
+            </div>
+            <a
+              href={b.url}
+              target="_blank"
+              rel="noreferrer"
+              className="self-start break-all font-mono text-[12.5px] text-accent underline-offset-4 hover:underline sm:pt-0.5 sm:text-right"
+            >
+              {displayUrl(b.url)}
+            </a>
+          </li>
+        ))}
+      </ul>
+
+      <div className="mt-8 break-inside-avoid rounded-2xl border-[1.5px] border-ink bg-accent-soft p-5 shadow-[var(--press)] print:shadow-none">
+        <p className="font-mono text-[12.5px] font-semibold text-ink-2">Next step</p>
+        <h2 className="font-display mt-1 text-[1.5rem] font-bold leading-tight text-ink">{NEXT_STEP.title}</h2>
+        {NEXT_STEP.body.map((p) => (
+          <p key={p} className="mt-2 max-w-[68ch] text-[14.5px] leading-snug text-ink-2">
+            {p}
+          </p>
+        ))}
       </div>
     </Sheet>
   );

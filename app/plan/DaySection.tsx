@@ -66,7 +66,7 @@ export function DaySection({ day }: { day: DayContent }) {
       </div>
 
       {/* 1. Lessons */}
-      <div className="mt-7">
+      <div className="mt-7 print:mt-5">
         <StepHead n={1} title="Learn it in the app" note="Make every prediction before you read on." />
         <ol className="mt-3 divide-y divide-rule rounded-xl border border-rule">
           {day.lessons.map((l, i) => {
@@ -93,7 +93,7 @@ export function DaySection({ day }: { day: DayContent }) {
 
       {/* 2. Watch */}
       {day.watch.length > 0 && (
-        <div className="mt-7">
+        <div className="mt-7 print:mt-5">
           <StepHead n={2} title="Watch and read" note="Watch the marked chapters, skim the rest at 2x." />
           <div className="mt-3 grid gap-3">
             {day.watch.map((r) => (
@@ -105,7 +105,7 @@ export function DaySection({ day }: { day: DayContent }) {
 
       {/* 3. Build */}
       {(day.build.length > 0 || day.experiments.length > 0) && (
-        <div className="mt-7">
+        <div className="mt-7 print:mt-5">
           <StepHead n={3} title="Build with AI, explain it yourself" />
           {day.build.length > 0 && (
             <ul className="mt-2.5 space-y-0.5">
@@ -125,9 +125,9 @@ export function DaySection({ day }: { day: DayContent }) {
           {day.experiments.length > 0 && (
             <div className="mt-4">
               <p className="plan-keep text-[14px] font-bold text-ink">Predict, then break it</p>
-              <div className="mt-2 grid gap-2.5 sm:grid-cols-2">
-                {day.experiments.map((e) => (
-                  <article key={e.title} className="break-inside-avoid rounded-xl border border-rule bg-card-2 p-3.5 print:bg-transparent">
+              <div className={`mt-2 grid gap-2.5 sm:grid-cols-2 ${day.experiments.length >= 3 ? "print:grid-cols-3" : ""}`}>
+                {day.experiments.map((e, i) => (
+                  <article key={i} className="break-inside-avoid rounded-xl border border-rule bg-card-2 p-3.5 print:bg-transparent">
                     <h4 className="text-[14.5px] font-bold leading-snug text-ink">{e.title}</h4>
                     <p className="mt-1.5 rounded-lg border border-dashed border-mark bg-mark-soft/60 px-2.5 py-1.5 text-[13.5px] leading-snug text-ink print:bg-transparent">
                       <span className="font-semibold">Predict: </span>
@@ -137,7 +137,7 @@ export function DaySection({ day }: { day: DayContent }) {
                       <span className="font-semibold text-ink">How: </span>
                       {e.how}
                     </p>
-                    <p className="mt-3 hidden border-b border-dashed border-ink-3 pb-4 text-[12px] text-ink-3 print:block">Your guess</p>
+                    <p className="mt-2.5 hidden border-b border-dashed border-ink-3 pb-3 text-[12px] text-ink-3 print:block">Your guess</p>
                   </article>
                 ))}
               </div>
@@ -147,8 +147,19 @@ export function DaySection({ day }: { day: DayContent }) {
       )}
 
       {/* 4. Check */}
-      <div className="mt-7">
-        <StepHead n={4} title="Check yourself" note="Out loud, before you look anything up." />
+      <div className="mt-7 print:mt-5">
+        <StepHead
+          n={4}
+          title="Check yourself"
+          note={
+            <>
+              Out loud first. Model answers:{" "}
+              <Link href={`${dayPath}#check`} className="font-mono text-accent underline-offset-4 hover:underline">
+                {dayPath}
+              </Link>
+            </>
+          }
+        />
         {day.checks.length > 0 ? (
           <ol className="mt-2.5 space-y-0.5">
             {day.checks.map((c, i) => (
@@ -173,12 +184,8 @@ export function DaySection({ day }: { day: DayContent }) {
             </ul>
           </div>
         )}
-        <p className="mt-4 rounded-lg bg-card-2 px-3 py-2 text-[13.5px] text-ink-2 print:border print:border-rule print:bg-transparent">
-          Model answers and experiment results:{" "}
-          <Link href={`${dayPath}#check`} className="font-mono text-accent underline-offset-4 hover:underline print:no-underline">
-            {dayPath}
-          </Link>
-          {" "}in the app. Ticks you make here show up there too.
+        <p className="mt-4 rounded-lg bg-card-2 px-3 py-2 text-[13.5px] text-ink-2 print:hidden">
+          The day page has the model answers and what each experiment should show. Ticks you make here show up there too.
         </p>
       </div>
     </Sheet>

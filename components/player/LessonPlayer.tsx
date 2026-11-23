@@ -263,21 +263,21 @@ function Narrative({
               <ArrowLeft size={15} /> Back
             </button>
             {!isLast ? (
-              <button type="button" className="btn btn-primary flex-1 justify-between" onClick={() => go(step + 1)}>
+              <button type="button" className="btn btn-primary min-w-0 flex-1 justify-between" onClick={() => go(step + 1)}>
                 <span className="truncate">Next: {mod?.steps[step + 1]?.label}</span>
-                <ArrowRight size={16} />
+                <ArrowRight size={16} className="shrink-0" />
               </button>
             ) : next ? (
-              <Link href={`/day/${next.day}/${next.slug}/`} className="btn btn-primary flex-1 justify-between">
+              <Link href={`/day/${next.day}/${next.slug}/`} className="btn btn-primary min-w-0 flex-1 justify-between">
                 <span className="truncate">
                   {next.day === lesson.day ? "Next lesson" : `Day ${next.day}`}: {next.title}
                 </span>
-                <ArrowRight size={16} />
+                <ArrowRight size={16} className="shrink-0" />
               </Link>
             ) : (
-              <Link href="/" className="btn btn-primary flex-1 justify-between">
+              <Link href="/" className="btn btn-primary min-w-0 flex-1 justify-between">
                 <span>Back to the course map</span>
-                <ArrowRight size={16} />
+                <ArrowRight size={16} className="shrink-0" />
               </Link>
             )}
           </div>

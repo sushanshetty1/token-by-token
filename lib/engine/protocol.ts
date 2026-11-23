@@ -34,7 +34,7 @@ export interface SamplePoint {
 
 export type FromWorker =
   | { type: "ready"; run: RunConfig; params: number; vocab: string[]; trainChars: number; valChars: number }
-  | { type: "progress"; step: number; losses: [number, number][]; stepsPerSec: number; gradNorm: number }
+  | { type: "progress"; step: number; losses: [number, number][]; stepsPerSec: number; gradNorm: number; maxGradNorm: number }
   | { type: "eval"; point: EvalPoint }
   | { type: "sample"; point: SamplePoint }
   | { type: "status"; running: boolean; step: number; done: boolean }

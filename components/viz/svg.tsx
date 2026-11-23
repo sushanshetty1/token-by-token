@@ -392,8 +392,7 @@ export function Matrix({
         }),
       )}
       {highlightRow !== undefined && (
-        <motion.rect
-          layout
+        <rect
           x={x - 4}
           y={y + highlightRow * (cell + gap) - 4}
           width={W + 8}
@@ -402,12 +401,10 @@ export function Matrix({
           fill="none"
           stroke="var(--ink)"
           strokeWidth={2}
-          initial={false}
-          animate={{ y: y + highlightRow * (cell + gap) - 4 }}
         />
       )}
       {highlightCol !== undefined && (
-        <motion.rect
+        <rect
           x={x + highlightCol * (cell + gap) - 4}
           y={y - 4}
           width={cell + 8}
@@ -416,8 +413,6 @@ export function Matrix({
           fill="none"
           stroke="var(--mark)"
           strokeWidth={2}
-          initial={false}
-          animate={{ x: x + highlightCol * (cell + gap) - 4 }}
         />
       )}
     </g>

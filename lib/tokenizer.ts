@@ -10,7 +10,7 @@ export const ENCODING_LABEL: Record<EncodingName, string> = {
 };
 
 interface Api {
-  encode: (s: string) => number[];
+  encode: (s: string, opts?: { disallowedSpecial?: Set<string> }) => number[];
   decode: (ids: Iterable<number>) => string;
   vocab: number;
 }
@@ -39,7 +39,13 @@ export function useTokens(text: string, name: EncodingName) {
     let live = true;
     loadEncoding(name).then((api) => {
       if (!live) return;
-      const ids = api.encode(text);
+      let ids: number[] = [];
+      try {
+        // Text that looks like a special token (e.g. "<|endoftext|>") is encoded as plain text.
+        ids = api.encode(text, { disallowedSpecial: new Set() });
+      } catch {
+        ids = [];
+      }
       const pieces = ids.map((id) => {
         const t = api.decode([id]);
         return { id, text: t, partial: t.includes("�") };

@@ -28,6 +28,8 @@ export interface TrainerSnapshot {
   samples: SamplePoint[];
   stepsPerSec: number;
   gradNorm: number;
+  /** Largest gradient norm (before clipping) seen in this run. */
+  maxGradNorm: number;
   diverged: boolean;
   error: string | null;
 }
@@ -44,6 +46,7 @@ const EMPTY: TrainerSnapshot = {
   samples: [],
   stepsPerSec: 0,
   gradNorm: 0,
+  maxGradNorm: 0,
   diverged: false,
   error: null,
 };
@@ -63,7 +66,7 @@ export class TrainerClient {
   private subscribers = 0;
   private graceTimer: ReturnType<typeof setTimeout> | null = null;
   private wantRunning = false;
-  private held = false;
+  private holds = new Set<string>();
   private hidden = false;
   private sentRunning = false;
   private ready = false;
@@ -109,6 +112,8 @@ export class TrainerClient {
   /** Start (or resume) training, optionally stopping at maxSteps. */
   start(maxSteps?: number) {
     if (maxSteps !== undefined) this.set({ maxSteps });
+    // An explicit start on the stage outranks the lesson player's pause.
+    this.holds.delete("player");
     this.wantRunning = true;
     this.done = false;
     this.sync(true);
@@ -121,8 +126,14 @@ export class TrainerClient {
 
   /** Hold training while the lesson player is paused. */
   setHeld(held: boolean) {
-    if (this.held === held) return;
-    this.held = held;
+    this.hold("player", held);
+  }
+
+  /** Named holds: training runs only when no hold is on. */
+  hold(reason: string, on: boolean) {
+    if (on === this.holds.has(reason)) return;
+    if (on) this.holds.add(reason);
+    else this.holds.delete(reason);
     this.sync();
   }
 
@@ -182,7 +193,7 @@ export class TrainerClient {
   }
 
   private shouldRun() {
-    return this.ready && this.wantRunning && !this.done && !this.held && !this.hidden && (this.subscribers > 0 || this.graceTimer !== null);
+    return this.ready && this.wantRunning && !this.done && this.holds.size === 0 && !this.hidden && (this.subscribers > 0 || this.graceTimer !== null);
   }
 
   private sync(force = false) {
@@ -224,6 +235,7 @@ export class TrainerClient {
           losses: this.snap.losses.concat(m.losses),
           stepsPerSec: m.stepsPerSec || this.snap.stepsPerSec,
           gradNorm: m.gradNorm,
+          maxGradNorm: m.maxGradNorm,
           diverged,
         });
         break;

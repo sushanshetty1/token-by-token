@@ -29,6 +29,7 @@ let opts: Required<ResetOptions> = DEFAULTS;
 let running = false;
 let maxSteps = Infinity;
 let stepsPerSec = 0;
+let maxGradNorm = 0;
 let scheduled = false;
 
 function data(): Promise<CharData> {
@@ -51,6 +52,7 @@ async function reset(options: ResetOptions) {
   opts = { ...DEFAULTS, ...options, run: { ...options.run } };
   trainer = new Trainer(d, opts.run);
   stepsPerSec = 0;
+  maxGradNorm = 0;
   post({
     type: "ready",
     run: trainer.run,
@@ -80,13 +82,14 @@ function loop() {
   let steps = 0;
   let diverged = false;
   const flush = () => {
-    if (losses.length) post({ type: "progress", step: t.step, losses: losses.splice(0), stepsPerSec, gradNorm: t.lastGradNorm });
+    if (losses.length) post({ type: "progress", step: t.step, losses: losses.splice(0), stepsPerSec, gradNorm: t.lastGradNorm, maxGradNorm });
   };
   while (performance.now() - chunkStart < 80 && t.step < maxSteps) {
     const s0 = performance.now();
     const loss = t.trainStep();
     trainMs += performance.now() - s0;
     steps++;
+    if (t.lastGradNorm > maxGradNorm) maxGradNorm = t.lastGradNorm;
     losses.push([t.step, loss]);
     if (!Number.isFinite(loss)) {
       diverged = true;

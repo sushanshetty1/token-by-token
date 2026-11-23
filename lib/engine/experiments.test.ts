@@ -38,7 +38,7 @@ describe.skipIf(!process.env.EXP)("experiments", () => {
       const t0 = performance.now();
       const record = () => {
         if (t.step % evalEvery === 0 || t.step === s.steps) evals.push({ step: t.step, ...t.estimateLoss() });
-        if (sampleAt.has(t.step)) samples.push({ step: t.step, text: t.sample("\n", s.sampleLen ?? 160, s.temperature ?? 0.8, 1000 + t.step) });
+        if (sampleAt.has(t.step)) samples.push({ step: t.step, text: t.sample("\n", s.sampleLen ?? 160, s.temperature ?? 0.8, t.run.seed * 7919 + t.step) });
       };
       record();
       let maxGrad = 0;

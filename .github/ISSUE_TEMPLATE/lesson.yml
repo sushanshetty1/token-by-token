@@ -1,0 +1,26 @@
+name: Lesson idea or unclear explanation
+description: Suggest a lesson, or point at a step that did not click.
+labels: [content]
+body:
+  - type: dropdown
+    id: kind
+    attributes:
+      label: Kind
+      options:
+        - A step that did not click
+        - A new lesson
+        - A better interview question or answer
+    validations:
+      required: true
+  - type: input
+    id: where
+    attributes:
+      label: Where
+      description: The day and lesson, or where a new lesson would fit in the seven days.
+  - type: textarea
+    id: idea
+    attributes:
+      label: The idea
+      description: What the learner should be able to say afterwards, and the picture that would get them there.
+    validations:
+      required: true

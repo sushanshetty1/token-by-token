@@ -1,123 +1,167 @@
+<div align="center">
+
+<img src="app/icon.svg" width="72" height="72" alt="Token by Token logo: three token tiles">
+
 # Token by Token
 
-Build an LLM from scratch in 7 days. Token by Token is a Next.js app that teaches how a large language model works from the inside: animated, step-by-step lessons build the picture in your head, Karpathy's and 3Blue1Brown's videos make you build it in code, and a self-check at the end of every day makes sure you can explain it in an interview.
+**Build an LLM from scratch in 7 days.**<br>
+Animated lessons that show what happens inside a language model, one token at a time.
+
+![Next.js 16](https://img.shields.io/badge/Next.js-16-17212b?logo=nextdotjs)
+![React 19](https://img.shields.io/badge/React-19-2f52d0?logo=react&logoColor=white)
+![TypeScript strict](https://img.shields.io/badge/TypeScript-strict-2f52d0?logo=typescript&logoColor=white)
+![20 lessons](https://img.shields.io/badge/lessons-20-e4972a)
+![Static export](https://img.shields.io/badge/hosting-any%20static%20host-2a8a57)
+![MIT license](https://img.shields.io/badge/license-MIT-7a8591)
+
+[Quick start](#quick-start) · [The seven days](#the-seven-days) · [How it works](#how-it-works) · [Write a lesson](docs/authoring.md) · [Contribute](CONTRIBUTING.md)
+
+<img src="docs/media/lesson.gif" width="100%" alt="The Queries, keys and values lesson stepping from the Q, K, V projections to scaled scores, the softmax saturation chart and the causal mask">
+
+</div>
+
+## Why this exists
+
+Most LLM explainers stop at a diagram. Most build-it-yourself courses bury the idea under the code. Token by Token does both, in that order:
+
+1. **See it.** 20 animated lessons replay every step of a GPT on real numbers: tokens, embeddings, attention scores, the residual stream, the loss.
+2. **Build it.** Each day points at the exact chapters of Andrej Karpathy's *Zero to Hero* and 3Blue1Brown's deep learning series to watch, skim or skip, and what to build with an AI assistant.
+3. **Say it.** Every day ends with interview questions and model answers, so you can explain each line out loud.
 
 The finish line is the whiteboard test: draw the whole path from memory and say what flows along every arrow.
 
 ```
-text -> tokens -> embeddings -> attention + MLP blocks -> logits -> loss -> backprop -> updated weights
+text → tokens → embeddings → attention + MLP blocks → logits → loss → backprop → updated weights
 ```
 
-The approach is AI-first. Let AI type the code; you must be able to explain every line.
+## What is inside
 
-## What is in the app
+<table>
+<tr>
+<td width="50%" valign="top">
 
-| Route | What it is |
-| --- | --- |
-| `/` | The course map: the path diagram, the seven days, and a live tokenizer (GPT-2 and GPT-4o BPE in the browser). |
-| `/day/<n>/` | One day: its lessons, the video chapters to watch, skim or skip, the build, experiments, and interview questions with model answers. |
-| `/day/<n>/<slug>/` | One animated lesson, played step by step with predictions, a code dock and a live stage. |
-| `/plan/` | The 7-day study plan as a printable document, with a Download PDF button. |
-| `/cheatsheet/` | The interview cheat sheet: shapes, formulas and numbers worth knowing. |
-| `/day/7/whiteboard/` | The whiteboard test and the interview drill. |
+**A real tokenizer in the browser.** Type anything and watch GPT-4o or GPT-2 cut it into tokens, with every id. Try "strawberry", arithmetic, code, or Kannada to see where tokenization breaks.
 
-Day 5's "Train a tiny GPT" lesson trains a real character-level transformer in your browser. The engine is plain TypeScript with hand-written forward and backward passes (`lib/engine/`), running in a Web Worker.
+<img src="docs/media/tokenizer.gif" alt="Typing a question about strawberry into the tokenizer, then switching to Kannada and Python code">
 
-Progress (lessons seen, ticked checklists) lives in your browser's `localStorage` under `tbt:progress:v1`. Ticks on the plan and on the day pages share the same ids, so ticking a question in one place ticks it in the other.
+</td>
+<td width="50%" valign="top">
 
-## Run it
+**A GPT that trains on your laptop.** Day 5 trains a 64k-parameter character-level transformer on Shakespeare in a Web Worker. The forward and backward passes are hand-written TypeScript, checked against numerical gradients.
 
-You need [Bun](https://bun.sh) and Node. Screenshots and the PDF also need Google Chrome installed.
+<img src="docs/media/train.gif" alt="Pressing Start training: the loss falls from 4.17 toward 2.5 against the recorded run while samples improve">
+
+</td>
+</tr>
+<tr>
+<td width="50%" valign="top">
+
+**A printable 7-day plan.** The study plan is a page and an A4 PDF, shown as two-page spreads on wide screens, with checklists that sync with the day pages.
+
+<img src="docs/media/plan.png" alt="The 7-day plan as two-page spreads">
+
+</td>
+<td width="50%" valign="top">
+
+**Light and dark, desktop and phone.** One graph-paper design system in both themes. Progress stays in your browser, with no account.
+
+<img src="docs/media/day-dark.png" alt="The Day 4 page in the dark theme">
+
+</td>
+</tr>
+</table>
+
+Every lesson can also be read as plain text, which is how search engines and screen readers get the whole thing.
+
+## Quick start
+
+You need [Bun](https://bun.sh) 1.3+ and Node 22+.
 
 ```bash
+git clone <this repo> token-by-token
+cd token-by-token
 bun install
-bun run dev -- --port 3140   # http://localhost:3140, the port the scripts below expect
+bun run dev -- --port 3140
 ```
 
-Build a static site:
+Open http://localhost:3140. To build the static site:
 
 ```bash
-bun run build          # static export to out/
-bun run serve          # http://localhost:3150
+NEXT_PUBLIC_SITE_URL=https://your-domain.example bun run build   # writes out/
+bun run serve                                                     # http://localhost:3150
 ```
 
-`next.config.ts` sets `output: "export"` and `trailingSlash: true`, so every page is a plain HTML file in `out/` and the app can be hosted anywhere that serves static files. The build script sets `NEXT_LOADER_THREADS=1`, which makes Turbopack run its CSS loaders in worker threads instead of a socket-based child-process pool (that pool failed to start in this machine's sandboxed shells). `NEXT_DIST_DIR` picks the output folder, so a build never touches the dev server's `.next`.
+`out/` is plain HTML, CSS and JS, so it runs on any static host. See [docs/deploying.md](docs/deploying.md).
 
-## How the 7 days work
+## The seven days
 
-About 18 hours in total, two to three hours a day. Every day runs the same loop: learn it in the app, watch the marked video chapters, build it with AI while you explain each line, then check yourself out loud.
+About 18 hours in all, two to three hours a day. Every day runs the same loop: learn it in the app, watch the marked chapters, build it with AI while you explain each line, then check yourself out loud.
 
-| Day | Title | Lessons |
-| --- | --- | --- |
-| 1 | The whole picture | A prompt's journey; One token at a time |
-| 2 | How networks learn | Derivatives on a graph; Backprop, node by node; The training loop |
-| 3 | Tokens and embeddings | Tokenization with BPE; Embeddings and positions; A bigram model and its loss |
-| 4 | Self-attention | Tokens talking; Queries, keys and values; Multi-head attention |
-| 5 | The block, and training it | Anatomy of a block; Train a tiny GPT; Break it on purpose |
-| 6 | Scale, and how it answers you | Counting GPT-2's parameters; Training at scale; How the model answers you |
-| 7 | From GPT to ChatGPT | From GPT to ChatGPT; What changed since GPT-2; The whiteboard test |
+| Day | Theme | Lessons | You can then |
+| :-: | --- | --- | --- |
+| 1 | The whole picture | A prompt's journey · One token at a time | Trace a prompt from keyboard to first word of the reply |
+| 2 | How networks learn | Derivatives on a graph · Backprop, node by node · The training loop | Push gradients backwards by hand |
+| 3 | Tokens and embeddings | Tokenization with BPE · Embeddings and positions · A bigram model and its loss | Read cross-entropy loss like a pro |
+| 4 | Self-attention | Tokens talking · Queries, keys and values · Multi-head attention | Compute attention on four real tokens |
+| 5 | The block, and training it | Anatomy of a block · Train a tiny GPT · Break it on purpose | Train a GPT and explain every curve |
+| 6 | Scale, and how it answers you | Counting GPT-2's parameters · Training at scale · How the model answers you | Count 124M parameters, explain the KV cache |
+| 7 | From GPT to ChatGPT | From GPT to ChatGPT · What changed since GPT-2 · The whiteboard test | Pass the whiteboard test |
 
-Beyond the original Zero to Hero path, the plan covers inference (prefill and decode, the KV cache, sampling), what changed since GPT-2 (RoPE, RMSNorm, SwiGLU, grouped-query attention, mixture of experts), napkin math, and a timed interview drill. It ends with a mini project: train your own small GPT on text you care about and write it up.
+Beyond the original *Zero to Hero* path, it covers inference (prefill and decode, the KV cache, sampling), what changed since GPT-2 (RoPE, RMSNorm, SwiGLU, grouped-query attention, mixture of experts), napkin math, and a timed interview drill. It ends with a mini project: train your own small GPT on text you care about and write it up.
 
-## How the content is organised
+## How it works
+
+Each lesson is a module with 7 to 11 steps and one `Stage` that redraws a 960 × 540 SVG scene for every step. Steps carry a kind (intuition, problem, mechanism, insight, try, recap), a short body, an optional "guess before you look" question, highlighted lines of real PyTorch code, and live readings in the rail above the stage.
 
 ```
+app/                    routes: course map, /day/<n>/, /day/<n>/<lesson>/, /plan/, /cheatsheet/,
+                        plus sitemap, robots, manifest and llms.txt
 content/
-  curriculum.ts          the seven days, in order
-  lessons.ts             lazy loaders for every lesson module
-  day-<n>/
-    day.ts               the day's data: schedule, lessons, videos and chapters, build, prompts,
-                         experiments, interview questions, lines to say out loud
-    <slug>/index.tsx     one lesson
-lib/types.ts             the contracts: DayContent, LessonModule, LessonStep, StageProps
-lib/pipeline.ts          the stations of the whiteboard path
-components/player/       the lesson player and code dock
-components/viz/          SVG primitives and controls every stage is drawn with
-app/plan/                the 7-day plan page and its print layout
+  curriculum.ts         the seven days, in order
+  lessons.ts            lazy loaders for every lesson module
+  day-<n>/day.ts        a day as data: schedule, videos and chapters, build, experiments, questions
+  day-<n>/<slug>/       one lesson: index.tsx (steps), Stage.tsx (the scene), code.ts
+components/
+  player/               lesson player, stepper, code dock, text transcript
+  viz/                  SVG primitives and controls every stage is drawn with
+  day/ home/ shell/     page sections and the app frame
+lib/
+  engine/               the in-browser GPT: model, backprop, AdamW, Web Worker, tests
+  tokenizer.ts          GPT-2 and GPT-4o BPE, loaded on demand
+  site.ts schema.ts     SEO: page metadata and schema.org structured data
+scripts/                PDF, share cards, screenshots and the README GIFs
+docs/                   authoring guide, scripts, deploying, media
 ```
 
-A lesson is a `LessonModule`: 3 to 5 learning outcomes, a legend for every color on the stage, optional real PyTorch code, and 7 to 11 steps. Each step has a kind (intuition, problem, mechanism, insight, try, recap), a title and a short body, and can add a prediction question to answer before reading on, highlight lines of the code, and update live readings. The `Stage` component draws one evolving scene on a 960 by 540 canvas and redraws for every step.
+- **Static first.** `output: "export"` with `trailingSlash: true`. Every route prerenders, including the full text of every lesson.
+- **No backend.** Progress and preferences live in `localStorage` (`tbt:progress:v1`), read through `useSyncExternalStore` so the server render always matches.
+- **Real numbers.** The tokenizer is real BPE, the lessons work on real GPT-2 tokens and logits, and the training lab draws your run against a recorded run from the same seed.
+- **Findable.** Per-page titles, share cards that cut each title into real GPT tokens, a sitemap, schema.org `Course`, `LearningResource` and `FAQPage` data, and `llms.txt` for AI assistants.
 
-Read [AUTHORING.md](AUTHORING.md) before writing or changing a lesson. It has the visual language, the writing rules (no em dashes, sentence case, concrete numbers), the rules for working in parallel, and how to verify a lesson.
-
-## Regenerate the PDF
-
-The Download PDF button on `/plan/` serves `public/LLM_From_Scratch_7_Days.pdf`. It is generated from the page itself, so regenerate it whenever a `day.ts` changes:
-
-```bash
-bun run dev -- --port 3140      # in one terminal
-bun run pdf                     # in another; prints the page count
-```
-
-The script opens `http://localhost:3140/plan/` in your local Chrome through Playwright, in the light theme with print styles, and writes an A4 PDF with page numbers. Pass a different address as the first argument (for example `node scripts/make-pdf.mjs http://localhost:3000/plan/`) or `--out=path.pdf` to write somewhere else. It refuses to write anything if the page fails to render.
-
-To check the result, rasterize the pages and look at them, for example `pdftoppm -r 60 -png public/LLM_From_Scratch_7_Days.pdf /tmp/plan`.
-
-## Search and sharing
-
-Every page has its own title, description, canonical link, share card and schema.org data (`lib/site.ts`, `lib/schema.ts`). The build also writes `sitemap.xml`, `robots.txt`, `manifest.webmanifest`, and `llms.txt` plus `llms-full.txt` for AI assistants. Lesson pages prerender every step as text under "Read the whole lesson as text", and the day pages keep each interview answer in the HTML, hidden until opened.
-
-All of these links are absolute, so build with the real address:
-
-```bash
-NEXT_PUBLIC_SITE_URL=https://your-domain.example bun run build
-```
-
-Without it they point at `https://tokenbytoken.app`. The share cards in `public/og/` and the app icons come from `bun run og`, which draws each page's title cut into real GPT tokens with your local Chrome. Rerun it after changing a day's or a lesson's title or promise.
-
-## Scripts and checks
+## Commands
 
 | Command | What it does |
 | --- | --- |
-| `node scripts/shot.mjs <url> <out.png>` | Screenshot a page (`--dark`, `--w=390 --h=844` for a phone, `--full`, `--wait=3000`). Prints page errors. |
-| `node scripts/shot-lesson.mjs <day> <slug> <outDir>` | Screenshot every step of one lesson. |
-| `node scripts/montage.mjs <out.png> <cols> <width> <img...>` | Combine screenshots into one grid image. |
-| `bun run pdf` | Regenerate the plan PDF. |
-| `bun run og` | Regenerate the share cards and app icons. |
-| `npx tsc --noEmit -p .` | Type-check. |
-| `bun run lint` | ESLint. |
-| `bun run test` | Tests for the in-browser training engine (gradient checks, initial loss, determinism). |
+| `bun run dev -- --port 3140` | Dev server |
+| `bun run build` | Static export to `out/` |
+| `bun run serve` | Serve `out/` on port 3150 |
+| `bun run lint` | ESLint |
+| `bun run typecheck` | TypeScript, no emit |
+| `bun run test` | Engine tests: gradient checks, initial loss, determinism |
+| `bun run pdf` | Regenerate the plan PDF from `/plan/` |
+| `bun run og` | Regenerate share cards and app icons |
+| `bun run gifs` | Re-record the GIFs in this README |
+
+The scripts that drive Chrome are described in [docs/scripts.md](docs/scripts.md).
+
+## Contributing
+
+Fixes, clearer explanations and new lessons are welcome. Read [CONTRIBUTING.md](CONTRIBUTING.md), then [docs/authoring.md](docs/authoring.md) before writing a lesson: it has the visual language, the writing rules and how to check your work.
 
 ## Credits
 
-The videos and reference code are by Andrej Karpathy (micrograd, minbpe, ng-video-lecture, build-nanogpt, nanoGPT and nanochat) and 3Blue1Brown. This app links to them rather than copying them, and its code samples are compact versions written in the style of micrograd and nanoGPT (both MIT licensed).
+The videos and reference code are by Andrej Karpathy (micrograd, minbpe, ng-video-lecture, build-nanogpt, nanoGPT and nanochat) and 3Blue1Brown. This app links to them rather than copying them, and its code samples are compact versions written in the style of micrograd and nanoGPT (both MIT licensed). Tiny Shakespeare is in the public domain.
+
+## License
+
+[MIT](LICENSE)

@@ -12,7 +12,22 @@ NEXT_PUBLIC_SITE_URL=https://your-domain.example bun run build
 
 Without it, every absolute link points at `https://tokenbytoken.app` (see `lib/site.ts`).
 
-## Hosts
+## Docker behind Traefik (how llm.sushans.dev runs)
+
+`deploy/` builds the export on Node 24 and serves it with nginx (128 MB, read-only filesystem, no Node at runtime). `deploy/docker-compose.yml` publishes no ports: it joins an existing Traefik network (`dokploy-network` by default) and labels the container so Traefik routes the domain to it and gets a Let's Encrypt certificate.
+
+```bash
+# first time, on the server
+mkdir -p /opt/token-by-token && echo "DOMAIN=llm.example.com" > /opt/token-by-token/deploy/.env
+
+# every update, from your machine
+git archive HEAD | ssh root@your-server 'tar -x -C /opt/token-by-token'
+ssh root@your-server 'cd /opt/token-by-token && docker compose -p token-by-token -f deploy/docker-compose.yml --env-file deploy/.env up -d --build'
+```
+
+`NEXT_PUBLIC_SITE_URL` comes from `DOMAIN` as a build argument, so changing the domain means a rebuild. nginx answers a real 404 for unknown paths (never the homepage), adds the trailing slash with a 301, and caches `/_next/static/` for a year.
+
+## Other hosts
 
 | Host | Build command | Output directory |
 | --- | --- | --- |

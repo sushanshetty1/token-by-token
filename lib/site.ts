@@ -9,11 +9,13 @@ export const SITE_URL = (process.env.NEXT_PUBLIC_SITE_URL ?? "https://llm.sushan
 
 export const SITE = {
   name: "Token by Token",
-  tagline: "Build an LLM from scratch in 7 days",
+  tagline: "Build a tiny GPT from scratch in 7 days",
   description:
-    "A free, visual 7-day course on how large language models work. Animated lessons on tokenization, embeddings, attention, transformers, training and inference, paired with Andrej Karpathy's build-it-yourself videos and interview questions with answers.",
+    "A free, visual 7-day course: build a tiny GPT from scratch and understand how the big language models work. Animated lessons on tokenization, embeddings, attention, transformers, training and inference, paired with Andrej Karpathy's build-it-yourself videos and interview questions with answers.",
   locale: "en_US",
   keywords: [
+    "build a GPT from scratch",
+    "tiny GPT",
     "build an LLM from scratch",
     "how large language models work",
     "LLM course",

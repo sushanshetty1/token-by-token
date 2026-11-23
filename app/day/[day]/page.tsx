@@ -21,7 +21,7 @@ export async function generateMetadata({ params }: PageProps<"/day/[day]">): Pro
     description: snippet(`Day ${d.n} of 7. ${d.tagline} ${d.lessons.length} animated lessons, the videos to watch, what to build and ${d.checks.length} interview questions with answers.`),
     path: `/day/${d.n}/`,
     image: ogImage(`day-${d.n}`),
-    imageAlt: `Day ${d.n} of building an LLM from scratch: ${d.title}`,
+    imageAlt: `Day ${d.n} of building a tiny GPT from scratch: ${d.title}`,
     keywords: d.lessons.map((l) => l.title.toLowerCase()),
   });
 }

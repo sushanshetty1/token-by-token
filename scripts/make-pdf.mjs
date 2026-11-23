@@ -15,7 +15,7 @@ const out = resolve(root, args.find((a) => a.startsWith("--out="))?.slice(6) ?? 
 const footer = `
 <div style="width:100%; padding:0 14mm; display:flex; justify-content:space-between;
   font-family:-apple-system, 'Helvetica Neue', Arial, sans-serif; font-size:7.5px; color:#7a8591;">
-  <span>Build an LLM from scratch in 7 days</span>
+  <span>Build a tiny GPT from scratch in 7 days</span>
   <span><span class="pageNumber"></span> of <span class="totalPages"></span></span>
 </div>`;
 

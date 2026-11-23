@@ -30,12 +30,12 @@ import { PlanToolbar } from "./PlanToolbar";
 import { Tick } from "./Tick";
 
 export const metadata: Metadata = pageMeta({
-  title: "7-day study plan: build an LLM from scratch",
+  title: "7-day study plan: build a tiny GPT from scratch",
   description:
     "Learn how LLMs work in a week: what to study, which Karpathy and 3Blue1Brown chapters to watch, what to build and how to check yourself. Free PDF.",
   path: "/plan/",
   image: ogImage("plan"),
-  imageAlt: "The 7-day plan for building an LLM from scratch",
+  imageAlt: "The 7-day plan for building a tiny GPT from scratch",
   type: "article",
   keywords: ["LLM study plan", "learn LLMs in a week", "transformer study guide pdf"],
 });
@@ -44,7 +44,7 @@ const PLAN_LD = [
   {
     "@type": "LearningResource",
     "@id": abs("/plan/#plan"),
-    name: "Build an LLM from scratch in 7 days: the study plan",
+    name: "Build a tiny GPT from scratch in 7 days: the study plan",
     description: "What to learn, watch, build and check on each of the seven days, with a final project and interview drill.",
     url: abs("/plan/"),
     image: abs(ogImage("plan")),
@@ -133,11 +133,12 @@ function Cover({ hours, videos, questions }: { hours: number; videos: number; qu
       </div>
 
       <h1 className="font-display mt-10 text-[clamp(2.5rem,7vw,4.4rem)] font-extrabold leading-[0.95] text-ink text-balance [font-variation-settings:'wdth'_80] print:mt-14 print:text-[4.2rem]">
-        Build an LLM from scratch in 7 days
+        Build a tiny GPT from scratch in 7 days
       </h1>
       <p className="mt-5 max-w-[56ch] text-[clamp(1.05rem,2vw,1.2rem)] leading-relaxed text-ink-2">
         About {hours} hours over seven days. AI writes the code; you own the understanding. Each day pairs animated lessons in
-        this app with Karpathy&apos;s and 3Blue1Brown&apos;s videos, a build you explain line by line, and a self-check.
+        this app with Karpathy&apos;s and 3Blue1Brown&apos;s videos, a build you explain line by line, and a self-check. The GPT you
+        train is small; the ideas are the same ones inside every large language model.
       </p>
 
       <dl className="mt-7 grid grid-cols-3 gap-x-4 gap-y-3 border-y border-rule py-4 sm:grid-cols-5">

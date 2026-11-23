@@ -2,7 +2,7 @@
   "name": "token-by-token",
   "version": "0.1.0",
   "private": true,
-  "description": "Build an LLM from scratch in 7 days: animated lessons that show what happens inside a language model, one token at a time.",
+  "description": "Build a tiny GPT from scratch in 7 days: animated lessons that show what happens inside a language model, one token at a time.",
   "license": "MIT",
   "keywords": [
     "llm",

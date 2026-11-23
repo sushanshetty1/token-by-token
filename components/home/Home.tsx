@@ -28,7 +28,7 @@ export function Home() {
       {/* Hero */}
       <section className="grid items-stretch gap-8 pt-10 lg:grid-cols-[minmax(0,1fr)_minmax(0,560px)] lg:pt-16">
         <div className="flex flex-col justify-center">
-          <p className="text-[15px] font-semibold text-ink-2">Build an LLM from scratch in seven days</p>
+          <p className="text-[15px] font-semibold text-ink-2">Build a tiny GPT from scratch in seven days</p>
           <h1 className="font-display mt-3 text-[clamp(2.4rem,5.4vw,4.1rem)] font-extrabold leading-[0.98] text-ink">
             Learn how a language model thinks, one token at a time.
           </h1>

@@ -4,7 +4,7 @@
 
 # Token by Token
 
-**Build an LLM from scratch in 7 days.**<br>
+**Build a tiny GPT from scratch in 7 days, and understand how the big ones work.**<br>
 Animated lessons that show what happens inside a language model, one token at a time.
 
 [![CI](https://github.com/sushanshetty1/token-by-token/actions/workflows/ci.yml/badge.svg)](https://github.com/sushanshetty1/token-by-token/actions/workflows/ci.yml)
@@ -29,6 +29,8 @@ Most LLM explainers stop at a diagram. Most build-it-yourself courses bury the i
 1. **See it.** 20 animated lessons replay every step of a GPT on real numbers: tokens, embeddings, attention scores, the residual stream, the loss.
 2. **Build it.** Each day points at the exact chapters of Andrej Karpathy's *Zero to Hero* and 3Blue1Brown's deep learning series to watch, skim or skip, and what to build with an AI assistant.
 3. **Say it.** Every day ends with interview questions and model answers, so you can explain each line out loud.
+
+**What "tiny" means.** In the browser you train a 64,000-parameter GPT on Shakespeare. Following Karpathy, you build nanoGPT, the same design as GPT-2. Neither is a ChatGPT: models like that take thousands of GPUs and months of work. What carries over is every idea in them: tokens, embeddings, attention, the training loop, sampling.
 
 The finish line is the whiteboard test: draw the whole path from memory and say what flows along every arrow.
 

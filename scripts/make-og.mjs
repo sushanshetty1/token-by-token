@@ -19,7 +19,7 @@ const totalMin = days.reduce((s, d) => s + d.schedule.reduce((a, b) => a + b.min
 const cards = [
   {
     slug: "home",
-    kicker: "Build an LLM from scratch in 7 days",
+    kicker: "Build a tiny GPT from scratch in 7 days",
     title: "Learn how a language model thinks, one token at a time.",
     sub: "Animated lessons, Karpathy's build-it videos and interview questions with answers.",
     pills: [`${lessons.length} lessons`, `${Math.round(totalMin / 60)} h`, "Free"],

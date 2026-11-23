@@ -106,7 +106,7 @@ export function LessonPlayer({ lesson, dayTitle, lessonsInDay, next }: Props) {
   );
 
   return (
-    <div className="grid min-w-0 gap-4 xl:grid-cols-[minmax(0,1fr)_380px] 2xl:grid-cols-[minmax(0,1fr)_420px]">
+    <div className="grid min-w-0 grid-cols-1 gap-4 xl:grid-cols-[minmax(0,1fr)_380px] 2xl:grid-cols-[minmax(0,1fr)_420px]">
       {/* Centre column */}
       <div className="min-w-0 space-y-4">
         <header className="panel px-5 py-4">
@@ -177,7 +177,7 @@ export function LessonPlayer({ lesson, dayTitle, lessonsInDay, next }: Props) {
           </div>
         </section>
 
-        <div className="xl:hidden">{narrative}</div>
+        <div className="min-w-0 xl:hidden">{narrative}</div>
 
         {mod && (
           <section className="panel px-3 pb-2 pt-3 sm:px-4" aria-label="Steps in this lesson">

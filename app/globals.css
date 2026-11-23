@@ -1,26 +1,351 @@
 @import "tailwindcss";
 
+@custom-variant dark (&:where([data-theme="dark"], [data-theme="dark"] *));
+
+/*
+  Token by Token design tokens.
+  Data colors carry meaning everywhere: --neg / --pos are the two ends of the
+  diverging scale used for every number inside a vector or matrix, and
+  --q / --k / --v are always query, key and value.
+*/
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --paper: #eef1ee;
+  --paper-2: #e4e9e5;
+  --card: #fafbf9;
+  --card-2: #f4f6f3;
+  --ink: #17212b;
+  --ink-2: #47525e;
+  --ink-3: #7a8591;
+  --rule: #d3dad4;
+  --rule-strong: #b9c3bc;
+  --grid: #dde3de;
+
+  --accent: #2f52d0;
+  --accent-ink: #ffffff;
+  --accent-soft: #dfe5fb;
+  --mark: #e4972a;
+  --mark-soft: #fbecd2;
+
+  --neg: #2f52d0;
+  --pos: #e4972a;
+  --cell-zero: #f6f7f5;
+
+  --q: #2f52d0;
+  --k: #c8405a;
+  --v: #2a8a57;
+  --q-soft: #dfe5fb;
+  --k-soft: #f7dde2;
+  --v-soft: #d9efe2;
+
+  --ok: #2a8a57;
+  --ok-soft: #d9efe2;
+  --bad: #c8405a;
+  --bad-soft: #f7dde2;
+  --violet: #6b4fd0;
+  --violet-soft: #e7e1fa;
+
+  --shadow-1: 0 1px 0 rgba(23, 33, 43, 0.06), 0 1px 2px rgba(23, 33, 43, 0.06);
+  --shadow-2: 0 1px 0 rgba(23, 33, 43, 0.05), 0 8px 24px -12px rgba(23, 33, 43, 0.22);
+  --press: 0 2px 0 var(--ink);
+
+  color-scheme: light;
+}
+
+[data-theme="dark"] {
+  --paper: #11161c;
+  --paper-2: #0d1116;
+  --card: #171e26;
+  --card-2: #1c242e;
+  --ink: #e6ebef;
+  --ink-2: #aab4be;
+  --ink-3: #7c8794;
+  --rule: #283340;
+  --rule-strong: #364352;
+  --grid: #1a222b;
+
+  --accent: #7f9bff;
+  --accent-ink: #0d1116;
+  --accent-soft: #1f2a4d;
+  --mark: #f0b04e;
+  --mark-soft: #3a2c15;
+
+  --neg: #6f8cff;
+  --pos: #f0b04e;
+  --cell-zero: #1d2530;
+
+  --q: #7f9bff;
+  --k: #f0738b;
+  --v: #4fc486;
+  --q-soft: #1f2a4d;
+  --k-soft: #40202a;
+  --v-soft: #163527;
+
+  --ok: #4fc486;
+  --ok-soft: #163527;
+  --bad: #f0738b;
+  --bad-soft: #40202a;
+  --violet: #a690ff;
+  --violet-soft: #2a2347;
+
+  --shadow-1: 0 1px 0 rgba(0, 0, 0, 0.3);
+  --shadow-2: 0 10px 30px -14px rgba(0, 0, 0, 0.7);
+  --press: 0 2px 0 #000;
+
+  color-scheme: dark;
 }
 
 @theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --color-paper: var(--paper);
+  --color-paper-2: var(--paper-2);
+  --color-card: var(--card);
+  --color-card-2: var(--card-2);
+  --color-ink: var(--ink);
+  --color-ink-2: var(--ink-2);
+  --color-ink-3: var(--ink-3);
+  --color-rule: var(--rule);
+  --color-rule-strong: var(--rule-strong);
+  --color-accent: var(--accent);
+  --color-accent-ink: var(--accent-ink);
+  --color-accent-soft: var(--accent-soft);
+  --color-mark: var(--mark);
+  --color-mark-soft: var(--mark-soft);
+  --color-neg: var(--neg);
+  --color-pos: var(--pos);
+  --color-q: var(--q);
+  --color-k: var(--k);
+  --color-v: var(--v);
+  --color-q-soft: var(--q-soft);
+  --color-k-soft: var(--k-soft);
+  --color-v-soft: var(--v-soft);
+  --color-ok: var(--ok);
+  --color-ok-soft: var(--ok-soft);
+  --color-bad: var(--bad);
+  --color-bad-soft: var(--bad-soft);
+  --color-violet: var(--violet);
+  --color-violet-soft: var(--violet-soft);
+
+  --font-sans: "Bricolage Grotesque Variable", ui-sans-serif, system-ui, sans-serif;
+  --font-mono: "JetBrains Mono Variable", ui-monospace, "SF Mono", Menlo, monospace;
+
+  --shadow-1: var(--shadow-1);
+  --shadow-2: var(--shadow-2);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+html {
+  background: var(--paper);
+  color: var(--ink);
+  -webkit-text-size-adjust: 100%;
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  background: var(--paper);
+  color: var(--ink);
+  font-family: var(--font-sans);
+  font-size: 16px;
+  line-height: 1.55;
+  font-optical-sizing: auto;
+  text-rendering: optimizeLegibility;
+}
+
+::selection {
+  background: var(--mark-soft);
+  color: var(--ink);
+}
+
+:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+  border-radius: 6px;
+}
+
+.font-display {
+  font-family: var(--font-sans);
+  font-variation-settings: "wdth" 88;
+  letter-spacing: -0.02em;
+}
+
+.tabular {
+  font-variant-numeric: tabular-nums;
+}
+
+/* Graph paper used behind every stage. */
+.graph-paper {
+  background-color: var(--card);
+  background-image:
+    linear-gradient(var(--grid) 1px, transparent 1px),
+    linear-gradient(90deg, var(--grid) 1px, transparent 1px);
+  background-size: 24px 24px;
+  background-position: -1px -1px;
+}
+
+/* Raised button with a printed edge: the one tactile gesture in the system. */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  border-radius: 10px;
+  border: 1.5px solid var(--ink);
+  background: var(--card);
+  color: var(--ink);
+  font-weight: 600;
+  font-size: 0.9rem;
+  padding: 0.5rem 0.85rem;
+  box-shadow: var(--press);
+  transition: transform 120ms ease, box-shadow 120ms ease, background 120ms ease;
+  cursor: pointer;
+  user-select: none;
+}
+.btn:hover {
+  background: var(--card-2);
+}
+.btn:active {
+  transform: translateY(2px);
+  box-shadow: 0 0 0 var(--ink);
+}
+.btn:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: var(--press);
+}
+.btn-primary {
+  background: var(--accent);
+  color: var(--accent-ink);
+}
+.btn-primary:hover {
+  background: color-mix(in oklab, var(--accent) 88%, var(--ink));
+}
+.btn-ghost {
+  border-color: var(--rule-strong);
+  box-shadow: none;
+  font-weight: 500;
+}
+.btn-ghost:active {
+  transform: none;
+}
+
+.kbd {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 1.4rem;
+  height: 1.35rem;
+  padding: 0 0.3rem;
+  border-radius: 5px;
+  border: 1px solid var(--rule-strong);
+  border-bottom-width: 2px;
+  background: var(--card);
+  font-family: var(--font-mono);
+  font-size: 0.68rem;
+  color: var(--ink-2);
+}
+
+.panel {
+  background: var(--card);
+  border: 1px solid var(--rule);
+  border-radius: 16px;
+}
+
+/* Prose inside lesson narration and day pages. */
+.prose-lesson {
+  color: var(--ink);
+  font-size: 0.975rem;
+  line-height: 1.65;
+}
+.prose-lesson p + p {
+  margin-top: 0.75rem;
+}
+.prose-lesson strong {
+  font-weight: 650;
+}
+.prose-lesson em {
+  font-style: italic;
+}
+.prose-lesson code,
+.inline-code {
+  font-family: var(--font-mono);
+  font-size: 0.84em;
+  padding: 0.08em 0.38em;
+  border-radius: 5px;
+  background: var(--paper-2);
+  border: 1px solid var(--rule);
+  white-space: nowrap;
+}
+.prose-lesson ul {
+  margin-top: 0.5rem;
+  padding-left: 1.1rem;
+  list-style: disc;
+}
+.prose-lesson li + li {
+  margin-top: 0.3rem;
+}
+.prose-lesson a {
+  color: var(--accent);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+/* SVG stage text defaults. */
+.stage-svg text {
+  font-family: var(--font-sans);
+  fill: var(--ink);
+}
+.stage-svg .mono {
+  font-family: var(--font-mono);
+}
+
+.scrollbar-thin {
+  scrollbar-width: thin;
+  scrollbar-color: var(--rule-strong) transparent;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+@media print {
+  html,
+  body {
+    background: #fff;
+  }
+}
+
+/* Range slider in the system's colors. */
+.tbt-range {
+  -webkit-appearance: none;
+  appearance: none;
+  height: 6px;
+  border-radius: 999px;
+  background: linear-gradient(to right, var(--accent) var(--pct, 50%), var(--paper-2) var(--pct, 50%));
+  border: 1px solid var(--rule);
+  outline: none;
+}
+.tbt-range::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: var(--card);
+  border: 2px solid var(--ink);
+  box-shadow: 0 2px 0 var(--ink);
+  cursor: grab;
+}
+.tbt-range::-moz-range-thumb {
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: var(--card);
+  border: 2px solid var(--ink);
+  cursor: grab;
+}
+.tbt-range:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 4px;
 }

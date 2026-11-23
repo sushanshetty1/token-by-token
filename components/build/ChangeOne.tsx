@@ -18,7 +18,7 @@ function VariantCard({ v, wide }: { v: Variant; wide: boolean }) {
   const [shown, setShown] = useState(false);
   const delta = v.val - BASELINE_VAL;
   return (
-    <li className={`panel flex flex-col p-5 ${wide ? "md:col-span-2" : ""}`}>
+    <li id={`variant-${v.id}`} className={`panel flex flex-col p-5 ${wide ? "md:col-span-2" : ""}`}>
       <p className="font-mono text-[13.5px] font-semibold text-ink">
         <span className="rounded-md bg-mark-soft px-1.5 py-0.5">{v.change}</span>
       </p>

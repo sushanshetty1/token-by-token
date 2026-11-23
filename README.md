@@ -79,6 +79,8 @@ Every lesson can also be read as plain text, which is how search engines and scr
 
 **After Day 7, build something.** [What to build next](https://llm.sushans.dev/build/) starts you on [`tiny_gpt.py`](public/starter/tiny_gpt.py), a character-level GPT in one PyTorch file that trains on a laptop CPU in about two minutes. Five "change one thing" experiments come with the numbers from real runs. Then there are 18 projects, sized for an evening, a weekend or a week, each with first steps, a finish line and a prompt for your AI assistant.
 
+<img src="docs/media/build.gif" width="100%" alt="The What to build next page: picking parts of tiny_gpt.py lights up their lines, two change-one-thing cards reveal their measured val loss, then the projects are filtered to A weekend and one opens its first steps">
+
 ## Quick start
 
 You need [Bun](https://bun.sh) 1.3+ and Node 22+.

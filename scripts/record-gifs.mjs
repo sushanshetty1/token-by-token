@@ -1,6 +1,6 @@
 // Record the README's demo GIFs (docs/media/*.gif) from a running copy of the app.
 // Needs Google Chrome and ffmpeg. Serve the static build first: bun run build && bun run serve
-// Usage: node scripts/record-gifs.mjs [baseUrl] [--only=lesson,tokenizer]
+// Usage: node scripts/record-gifs.mjs [baseUrl] [--only=lesson,tokenizer,build,train]
 import { execFileSync } from "node:child_process";
 import { mkdirSync, mkdtempSync, rmSync, statSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
@@ -51,6 +51,54 @@ const SCENES = [
     },
   },
   {
+    name: "build",
+    url: "/build/",
+    // A long scene with a lot of text: fewer frames and a narrower GIF keep it near the 2 MB budget.
+    gifWidth: 800,
+    fps: 8,
+    async setup(page) {
+      await page.evaluate(() => {
+        const y = document.getElementById("starter").getBoundingClientRect().top + scrollY - 76;
+        scrollTo(0, y);
+      });
+    },
+    async act(page) {
+      const glide = (id, offset = 76) =>
+        page.evaluate(
+          ([id, offset]) => {
+            const y = document.getElementById(id).getBoundingClientRect().top + scrollY - offset;
+            scrollTo({ top: y, behavior: "smooth" });
+          },
+          [id, offset],
+        );
+      await wait(1400);
+      for (const part of ["2. Model", "4. Training loop", "5. Sampling"]) {
+        await page.getByRole("button", { name: part }).click();
+        await wait(1700);
+      }
+      await glide("change-one");
+      await wait(1500);
+      const reveal = page.getByRole("button", { name: "I made my guess, show me" });
+      await reveal.first().click();
+      await wait(1600);
+      await reveal.last().click();
+      await wait(1200);
+      await glide("variant-nomask", 140);
+      await wait(2200);
+      await glide("projects-title", 76);
+      await wait(1500);
+      await page.getByRole("button", { name: "A weekend", exact: true }).click();
+      await wait(1500);
+      await page.locator("#teach-it-to-chat summary").click();
+      await wait(800);
+      await page.evaluate(() => {
+        const y = document.getElementById("teach-it-to-chat").getBoundingClientRect().top + scrollY - 90;
+        scrollTo({ top: y, behavior: "smooth" });
+      });
+      await wait(2600);
+    },
+  },
+  {
     name: "train",
     url: "/day/5/train-lab/#4",
     async act(page) {
@@ -71,6 +119,7 @@ try {
     const page = await ctx.newPage();
     await page.goto(base + s.url, { waitUntil: "networkidle", timeout: 90000 });
     await page.evaluate(() => document.fonts.ready);
+    if (s.setup) await s.setup(page);
     await wait(800);
 
     // Chrome's screencast sends a frame whenever the page repaints; each frame lasts until the next.
@@ -99,12 +148,12 @@ try {
     writeFileSync(concat, `${list.join("\n")}\nfile '${frames.at(-1).file}'\n`);
 
     const gif = join(outDir, `${s.name}.gif`);
-    const width = Math.min(960, s.crop?.w ?? size.width);
+    const width = s.gifWidth ?? Math.min(960, s.crop?.w ?? size.width);
     const crop = s.crop ? `crop=${s.crop.w}:${s.crop.h}:${s.crop.x}:${s.crop.y},` : "";
     execFileSync("ffmpeg", [
       "-y", "-loglevel", "error",
       "-f", "concat", "-safe", "0", "-i", concat,
-      "-vf", `${crop}fps=12,scale=${width}:-1:flags=lanczos,split[a][b];[a]palettegen=max_colors=128:stats_mode=diff[p];[b][p]paletteuse=dither=bayer:bayer_scale=5:diff_mode=rectangle`,
+      "-vf", `${crop}fps=${s.fps ?? 12},scale=${width}:-1:flags=lanczos,split[a][b];[a]palettegen=max_colors=128:stats_mode=diff[p];[b][p]paletteuse=dither=bayer:bayer_scale=5:diff_mode=rectangle`,
       gif,
     ]);
     console.log(`${s.name}.gif  ${length.toFixed(1)} s  ${(statSync(gif).size / 1e6).toFixed(1)} MB`);

@@ -1,6 +1,6 @@
 "use client";
 
-import { ArrowLeft, ArrowRight, Clock, Gauge, ListOrdered, Pause, Play, RotateCcw } from "lucide-react";
+import { ArrowLeft, ArrowRight, Clock, Gauge, ListOrdered, Move, Pause, Play, RotateCcw } from "lucide-react";
 import { AnimatePresence, motion } from "motion/react";
 import Link from "next/link";
 import { useCallback, useEffect, useMemo, useState } from "react";
@@ -100,9 +100,10 @@ export function LessonPlayer({ lesson, dayTitle, lessonsInDay, next }: Props) {
     return set;
   }, [mod, step, seen, progress.lessons, key]);
 
-  const s = mod?.steps[step];
-  const isLast = mod ? step === mod.steps.length - 1 : false;
   const Stage = mod?.Stage;
+  const narrative = (
+    <Narrative mod={mod} step={step} lessonKey={key} lesson={lesson} next={next} go={go} />
+  );
 
   return (
     <div className="grid min-w-0 gap-4 xl:grid-cols-[minmax(0,1fr)_380px] 2xl:grid-cols-[minmax(0,1fr)_420px]">
@@ -141,7 +142,7 @@ export function LessonPlayer({ lesson, dayTitle, lessonsInDay, next }: Props) {
 
         <section className="panel overflow-hidden" aria-label="Animated stage">
           <div className="flex flex-wrap items-center gap-3 border-b border-rule px-3 py-3 sm:px-4">
-            <div className="min-w-0 flex-1">{mod?.rail && <Rail slots={mod.rail} values={railValues} />}</div>
+            <div className="min-w-0 flex-1 basis-full sm:basis-0">{mod?.rail && <Rail slots={mod.rail} values={railValues} />}</div>
             <div className="flex shrink-0 gap-2">
               <button
                 type="button"
@@ -158,19 +159,25 @@ export function LessonPlayer({ lesson, dayTitle, lessonsInDay, next }: Props) {
               </button>
             </div>
           </div>
-          <div className="graph-paper relative aspect-[16/10] min-h-[320px] w-full sm:aspect-[16/9]">
-            {Stage ? (
-              <Stage key={`${step}-${runId}`} step={step} playing={playing} runId={runId} goTo={go} />
-            ) : (
-              <div className="grid h-full place-items-center text-[14px] text-ink-3">Loading the stage…</div>
-            )}
-          </div>
-          {mod?.legend && (
-            <div className="border-t border-rule px-4 py-2.5">
-              <Legend items={mod.legend} />
+          {/* On phones the stage keeps a readable size and pans sideways. */}
+          <div className="scrollbar-thin overflow-x-auto">
+            <div className="graph-paper relative aspect-[16/9] w-full min-w-[720px] md:min-w-0">
+              {Stage ? (
+                <Stage key={`${step}-${runId}`} step={step} playing={playing} runId={runId} goTo={go} />
+              ) : (
+                <div className="grid h-full place-items-center text-[14px] text-ink-3">Loading the stage…</div>
+              )}
             </div>
-          )}
+          </div>
+          <div className="flex flex-wrap items-center gap-x-4 gap-y-1 border-t border-rule px-4 py-2.5">
+            {mod?.legend && <Legend items={mod.legend} />}
+            <span className="ml-auto flex items-center gap-1 text-[12px] text-ink-3 md:hidden">
+              <Move size={12} /> Drag sideways to see the whole stage
+            </span>
+          </div>
         </section>
+
+        <div className="xl:hidden">{narrative}</div>
 
         {mod && (
           <section className="panel px-3 pb-2 pt-3 sm:px-4" aria-label="Steps in this lesson">
@@ -189,89 +196,114 @@ export function LessonPlayer({ lesson, dayTitle, lessonsInDay, next }: Props) {
             filename={mod.code.filename}
             source={mod.code.source}
             note={mod.code.note}
-            ranges={s?.code?.ranges ?? []}
-            caption={s?.code?.caption}
+            ranges={mod.steps[step]?.code?.ranges ?? []}
+            caption={mod.steps[step]?.code?.caption}
             open={codeOpen}
             onToggle={() => setCodeOpen((o) => !o)}
           />
         )}
+
+        <div className="xl:hidden">{mod && <LearnList items={mod.learn} ticked={ticked} />}</div>
       </div>
 
-      {/* Right column */}
-      <aside className="min-w-0 space-y-4 xl:sticky xl:top-[76px] xl:max-h-[calc(100vh-92px)] xl:self-start xl:overflow-y-auto xl:pb-2 scrollbar-thin">
-        <section className="panel flex flex-col p-5" aria-live="polite">
-          {s ? (
-            <>
-              <div className="flex items-center justify-between gap-3">
-                <span className="font-mono text-[12.5px] font-semibold text-ink-2">
-                  Step {step + 1} / {total}
-                </span>
-                <KindTag kind={s.kind} />
-              </div>
-              <AnimatePresence mode="wait">
-                <motion.div
-                  key={step}
-                  initial={{ opacity: 0, y: 6 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  exit={{ opacity: 0, y: -4 }}
-                  transition={{ duration: 0.22 }}
-                >
-                  <h2 className="font-display mt-3 text-[1.35rem] font-bold leading-tight text-ink">{s.title}</h2>
-                  <div className="prose-lesson mt-2.5">{s.body}</div>
-                  {s.predict && <PredictCard key={`${key}:${step}`} predict={s.predict} />}
-                  {s.keyIdea && <KeyIdea>{s.keyIdea}</KeyIdea>}
-                  {s.changed && <Changed items={s.changed} />}
-                </motion.div>
-              </AnimatePresence>
-              <div className="mt-6 flex items-stretch gap-2">
-                <button type="button" className="btn btn-ghost" onClick={() => go(step - 1)} disabled={step === 0}>
-                  <ArrowLeft size={15} /> Back
-                </button>
-                {!isLast ? (
-                  <button type="button" className="btn btn-primary flex-1 justify-between" onClick={() => go(step + 1)}>
-                    <span className="truncate">Next: {mod?.steps[step + 1]?.label}</span>
-                    <ArrowRight size={16} />
-                  </button>
-                ) : next ? (
-                  <Link href={`/day/${next.day}/${next.slug}/`} className="btn btn-primary flex-1 justify-between">
-                    <span className="truncate">
-                      {next.day === lesson.day ? "Next lesson" : `Day ${next.day}`}: {next.title}
-                    </span>
-                    <ArrowRight size={16} />
-                  </Link>
-                ) : (
-                  <Link href="/" className="btn btn-primary flex-1 justify-between">
-                    <span>Back to the course map</span>
-                    <ArrowRight size={16} />
-                  </Link>
-                )}
-              </div>
-              {isLast && (
-                <Link
-                  href={`/day/${lesson.day}/#check`}
-                  className="mt-2 text-center text-[13px] font-medium text-accent underline underline-offset-4"
-                >
-                  Then test yourself on Day {lesson.day}
-                </Link>
-              )}
-              <p className="mt-3 hidden items-center justify-center gap-1.5 text-[12px] text-ink-3 sm:flex">
-                <span className="kbd">←</span>
-                <span className="kbd">→</span> step
-                <span className="kbd ml-2">R</span> replay
-                <span className="kbd ml-2">Space</span> pause
-                {mod?.code && (
-                  <>
-                    <span className="kbd ml-2">C</span> code
-                  </>
-                )}
-              </p>
-            </>
-          ) : (
-            <div className="h-48 animate-pulse rounded-lg bg-paper-2" />
-          )}
-        </section>
+      {/* Right column on wide screens */}
+      <aside className="scrollbar-thin hidden min-w-0 space-y-4 xl:sticky xl:top-[76px] xl:block xl:max-h-[calc(100vh-92px)] xl:self-start xl:overflow-y-auto xl:pb-2">
+        {narrative}
         {mod && <LearnList items={mod.learn} ticked={ticked} />}
       </aside>
     </div>
+  );
+}
+
+function Narrative({
+  mod,
+  step,
+  lessonKey,
+  lesson,
+  next,
+  go,
+}: {
+  mod: LessonModule | null;
+  step: number;
+  lessonKey: string;
+  lesson: LessonRef;
+  next?: LessonRef;
+  go: (i: number) => void;
+}) {
+  const s = mod?.steps[step];
+  const total = mod?.steps.length ?? 0;
+  const isLast = mod ? step === total - 1 : false;
+  return (
+    <section className="panel flex flex-col p-5" aria-live="polite">
+      {s ? (
+        <>
+          <div className="flex items-center justify-between gap-3">
+            <span className="font-mono text-[12.5px] font-semibold text-ink-2">
+              Step {step + 1} / {total}
+            </span>
+            <KindTag kind={s.kind} />
+          </div>
+          <AnimatePresence mode="wait">
+            <motion.div
+              key={step}
+              initial={{ opacity: 0, y: 6 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -4 }}
+              transition={{ duration: 0.22 }}
+            >
+              <h2 className="font-display mt-3 text-[1.35rem] font-bold leading-tight text-ink">{s.title}</h2>
+              <div className="prose-lesson mt-2.5">{s.body}</div>
+              {s.predict && <PredictCard key={`${lessonKey}:${step}`} predict={s.predict} />}
+              {s.keyIdea && <KeyIdea>{s.keyIdea}</KeyIdea>}
+              {s.changed && <Changed items={s.changed} />}
+            </motion.div>
+          </AnimatePresence>
+          <div className="mt-6 flex items-stretch gap-2">
+            <button type="button" className="btn btn-ghost" onClick={() => go(step - 1)} disabled={step === 0}>
+              <ArrowLeft size={15} /> Back
+            </button>
+            {!isLast ? (
+              <button type="button" className="btn btn-primary flex-1 justify-between" onClick={() => go(step + 1)}>
+                <span className="truncate">Next: {mod?.steps[step + 1]?.label}</span>
+                <ArrowRight size={16} />
+              </button>
+            ) : next ? (
+              <Link href={`/day/${next.day}/${next.slug}/`} className="btn btn-primary flex-1 justify-between">
+                <span className="truncate">
+                  {next.day === lesson.day ? "Next lesson" : `Day ${next.day}`}: {next.title}
+                </span>
+                <ArrowRight size={16} />
+              </Link>
+            ) : (
+              <Link href="/" className="btn btn-primary flex-1 justify-between">
+                <span>Back to the course map</span>
+                <ArrowRight size={16} />
+              </Link>
+            )}
+          </div>
+          {isLast && (
+            <Link
+              href={`/day/${lesson.day}/#check`}
+              className="mt-2 text-center text-[13px] font-medium text-accent underline underline-offset-4"
+            >
+              Then test yourself on Day {lesson.day}
+            </Link>
+          )}
+          <p className="mt-3 hidden flex-wrap items-center justify-center gap-1.5 text-[12px] text-ink-3 sm:flex">
+            <span className="kbd">←</span>
+            <span className="kbd">→</span> step
+            <span className="kbd ml-2">R</span> replay
+            <span className="kbd ml-2">Space</span> pause
+            {mod?.code && (
+              <>
+                <span className="kbd ml-2">C</span> code
+              </>
+            )}
+          </p>
+        </>
+      ) : (
+        <div className="h-48 animate-pulse rounded-lg bg-paper-2" />
+      )}
+    </section>
   );
 }

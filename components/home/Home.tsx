@@ -195,7 +195,7 @@ function PathDiagram({ lit }: { lit: Set<string> | null }) {
   const trainX = [xOf(5), xOf(3), xOf(1)];
 
   return (
-    <svg viewBox={`-10 -10 ${W + 20} 300`} className="stage-svg block w-full min-w-[860px]" role="img" aria-label="The path from text to next token, and the training loop">
+    <svg viewBox={`-10 -10 ${W + 20} 316`} className="stage-svg block w-full min-w-[860px]" role="img" aria-label="The path from text to next token, and the training loop">
       <defs>
         <marker id="pd-arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
           <path d="M 0 0 L 10 5 L 0 10 z" fill="var(--ink)" />
@@ -228,7 +228,7 @@ function PathDiagram({ lit }: { lit: Set<string> | null }) {
           </text>
         </g>
       ))}
-      <text x={0} y={168} fontSize={13} fontWeight={650} fill="var(--ink-3)">
+      <text x={0} y={290} fontSize={13} fontWeight={650} fill="var(--ink-3)">
         Training loop: how the weights get good
       </text>
       <path
@@ -266,7 +266,7 @@ function PathDiagram({ lit }: { lit: Set<string> | null }) {
         </g>
       ))}
       <path
-        d={`M ${trainX[2]} 222 C ${trainX[2] - 120} 222, ${xOf(2) - 60} 150, ${xOf(2) + 20} 100`}
+        d={`M ${trainX[2] + bw / 2} 188 C ${trainX[2] + bw / 2} 140, ${xOf(3) + bw / 2} 150, ${xOf(3) + bw / 2} 100`}
         stroke="var(--ink)"
         strokeWidth={1.6}
         strokeDasharray="5 5"
@@ -274,8 +274,8 @@ function PathDiagram({ lit }: { lit: Set<string> | null }) {
         markerEnd="url(#pd-arrow)"
         style={{ opacity: on("update") ? 1 : 0.28 }}
       />
-      <text x={xOf(1) - 10} y={150} fontSize={12} className="mono" fill="var(--ink-2)" style={{ opacity: on("update") ? 1 : 0.28 }}>
-        new weights
+      <text x={xOf(3) + bw / 2 + 14} y={134} fontSize={12} className="mono" fill="var(--ink-2)" style={{ opacity: on("update") ? 1 : 0.28 }}>
+        new weights for every layer
       </text>
       <text x={xOf(5) + bw / 2 + 10} y={146} fontSize={12} className="mono" fill="var(--ink-2)" style={{ opacity: on("loss") ? 1 : 0.28 }}>
         compare with the real next token

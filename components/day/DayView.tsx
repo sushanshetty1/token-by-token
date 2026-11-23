@@ -122,7 +122,7 @@ export function DayView({ day, prev, next }: { day: DayContent; prev?: DayConten
       {/* 1. Lessons */}
       <section className="space-y-4">
         <SectionTitle n={1} title="Learn it here first" sub="Animated lessons that build the picture in your head before you see the code." />
-        <div className="grid gap-3 md:grid-cols-2 xl:grid-cols-3">
+        <div className={`grid gap-3 md:grid-cols-2 ${day.lessons.length === 3 ? "xl:grid-cols-3" : ""}`}>
           {day.lessons.map((l, i) => {
             const frac = lessonFraction(progress, lessonKey(day.n, l.slug));
             return (

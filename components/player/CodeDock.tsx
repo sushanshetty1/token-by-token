@@ -62,7 +62,7 @@ export function CodeDock({
           <span className="font-mono text-[13px]">{filename}</span>
           <ChevronDown size={15} className={`text-ink-3 transition-transform ${open ? "" : "-rotate-90"}`} />
         </button>
-        {open && caption && <span className="min-w-0 flex-1 text-[13px] text-ink-2">{caption}</span>}
+        {open && caption && <span className="order-last min-w-0 basis-full text-[13px] text-ink-2 sm:order-none sm:flex-1 sm:basis-0">{caption}</span>}
         {open && (
           <div className="ml-auto flex items-center gap-1.5">
             {hasRanges && (

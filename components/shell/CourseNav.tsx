@@ -207,7 +207,7 @@ export function CourseNav() {
       <button
         type="button"
         onClick={() => setDrawer(true)}
-        className="btn fixed bottom-4 left-4 z-30 lg:hidden print:hidden"
+        className={`btn fixed bottom-4 left-4 z-30 lg:hidden print:hidden ${isLesson ? "hidden" : ""}`}
         aria-label="Open the course outline"
       >
         <Menu size={16} /> Course

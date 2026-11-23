@@ -5,7 +5,7 @@ import type { Metadata } from "next";
  * structured data are all absolute, so set NEXT_PUBLIC_SITE_URL at build time
  * when the domain changes.
  */
-export const SITE_URL = (process.env.NEXT_PUBLIC_SITE_URL ?? "https://tokenbytoken.app").replace(/\/+$/, "");
+export const SITE_URL = (process.env.NEXT_PUBLIC_SITE_URL ?? "https://llm.sushans.dev").replace(/\/+$/, "");
 
 export const SITE = {
   name: "Token by Token",

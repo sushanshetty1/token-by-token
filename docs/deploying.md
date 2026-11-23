@@ -10,7 +10,7 @@ Canonical links, share cards, the sitemap and the structured data use absolute U
 NEXT_PUBLIC_SITE_URL=https://your-domain.example bun run build
 ```
 
-Without it, every absolute link points at `https://tokenbytoken.app` (see `lib/site.ts`).
+Without it, every absolute link points at `https://llm.sushans.dev` (see `lib/site.ts`).
 
 ## Docker behind Traefik (how llm.sushans.dev runs)
 

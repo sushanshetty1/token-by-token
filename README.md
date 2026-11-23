@@ -15,6 +15,7 @@ Animated lessons that show what happens inside a language model, one token at a 
 ![Static export](https://img.shields.io/badge/hosting-any%20static%20host-2a8a57)
 ![MIT license](https://img.shields.io/badge/license-MIT-7a8591)
 
+**[Open the course →](https://llm.sushans.dev)**<br><br>
 [Quick start](#quick-start) · [The seven days](#the-seven-days) · [How it works](#how-it-works) · [Write a lesson](docs/authoring.md) · [Contribute](CONTRIBUTING.md)
 
 <img src="docs/media/lesson.gif" width="100%" alt="The Queries, keys and values lesson stepping from the Q, K, V projections to scaled scores, the softmax saturation chart and the causal mask">
